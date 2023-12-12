@@ -23,6 +23,9 @@ class ReorderBufferEntry extends Bundle {
 
   /** isError */
   val isError = Bool()
+
+  /** isSendReceiveOp */
+  val isSendReceiveOp = Bool() //added by akamatsu
 }
 
 object ReorderBufferEntry {
@@ -34,5 +37,6 @@ object ReorderBufferEntry {
       _.value -> 0.U,
       _.programCounter -> 0.U,
       _.operationInorder -> false.B,
+      _.isSendReceiveOp -> false.B, //added by akamatsu
     )
 }

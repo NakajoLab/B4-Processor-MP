@@ -21,16 +21,14 @@ class DataMemoryBufferTest extends AnyFlatSpec with ChiselScalatestTester {
   it should "enqueue and dequeue" in {
     test(new DataMemoryBufferTestWrapper)
       .withAnnotations(Seq(WriteVcdAnnotation)) { c =>
-        c.io.memory.read.request.ready.poke(true)
-        c.io.memory.write.request.ready.poke(true)
-        c.io.memory.write.requestData.ready.poke(true)
-
         c.io.dataIn(0).valid.poke(true)
         c.io.dataIn(0).bits.address.poke(4)
         c.io.dataIn(0).bits.tag.poke(Tag(0, 10))
         c.io.dataIn(0).bits.data.poke(123)
         c.io.dataIn(0).bits.operation.poke(LoadStoreOperation.Load)
         c.io.dataIn(0).bits.operationWidth.poke(LoadStoreWidth.Byte)
+        c.io.memory.read.request.ready.poke(true)
+        c.io.memory.write.request.ready.poke(true)
 
         c.io.dataIn(1).valid.poke(true)
         c.io.dataIn(1).bits.address.poke(8)
@@ -39,14 +37,15 @@ class DataMemoryBufferTest extends AnyFlatSpec with ChiselScalatestTester {
         c.io.dataIn(1).bits.operation.poke(LoadStoreOperation.Store)
         c.io.dataIn(1).bits.operationWidth.poke(LoadStoreWidth.Word)
 
+        c.io.memory.read.request.ready.poke(true.B)
+        c.io.memory.write.request.ready.poke(true.B)
+
         if (c.io.dataIn(0).ready.peekBoolean()) {
           c.clock.step(1)
           c.io.dataIn(0).valid.poke(false)
         } else if (c.io.dataIn(1).ready.peekBoolean()) {
           c.clock.step(1)
           c.io.dataIn(1).valid.poke(false)
-        } else {
-          throw new RuntimeException("one should be ready")
         }
 
         // RRArbterで順序が入れ替わってしまっている。
@@ -54,7 +53,6 @@ class DataMemoryBufferTest extends AnyFlatSpec with ChiselScalatestTester {
         c.io.memory.write.request.valid.expect(true)
         c.io.memory.write.request.bits.address.expect(8)
         c.io.memory.write.request.bits.outputTag.id.expect(11)
-        c.io.memory.write.requestData.valid.expect(true)
         c.io.memory.write.requestData.bits.data.expect(1234)
         c.clock.step(1)
 

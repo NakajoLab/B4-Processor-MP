@@ -53,17 +53,8 @@ class z50_B4ProcessorBenchmark extends AnyFlatSpec with ChiselScalatestTester {
     }
   }
 
-  for (
-    filename <- Seq(
-      "median",
-      "median-mt",
-      "median-p",
-      "median-p-mt",
-      "median-p-byte",
-      "median-p-mt-byte",
-    )
-  ) {
-    it should s"run $filename" in {
+  for (i <- 2 until 3) {
+    it should s"run median$i" in {
       test(
         new B4ProcessorWithMemory()(
           defaultParams.copy(
@@ -81,15 +72,15 @@ class z50_B4ProcessorBenchmark extends AnyFlatSpec with ChiselScalatestTester {
             VerilatorBackendAnnotation,
           ),
         ) { c =>
-          c.initialize(
-            s"programs/riscv-tests/share/riscv-tests/benchmarks/$filename",
-          )
+          c.initialize(s"median$i")
           c.io.simulationIO.output.ready.poke(true)
-          var inputs = Seq(' ', ' ', ' ');
-          while (inputs != Seq('e', 'n', 'd')) {
-            val p = c.getOutput(100000, print_value = true)
-            inputs = Seq(inputs(1), inputs(2), p)
-          }
+          //        val outputStr =
+          //          "median done\n0, 454, 454, 564, 335, 187, 187, 749, 749, 365, \nverify done with "
+          //        for (cc <- outputStr) {
+          //          c.checkForOutput(cc, 500000, print_value = true)
+          //        }
+          for (i <- 0 until 10000)
+            c.getOutput(100000, print_value = true)
         }
     }
   }

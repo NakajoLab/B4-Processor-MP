@@ -26,6 +26,7 @@ import b4processor.modules.reservationstation.{
   ReservationStation,
   ReservationStation2,
 }
+import b4processor.modules.SendReceiveQueue.SendReceiveQueue //added by akamatsu
 import b4processor.utils.axi.{ChiselAXI, VerilogAXI}
 import chisel3._
 import chisel3.experimental.dataview.DataViewable
@@ -56,6 +57,7 @@ class B4Processor(implicit params: Parameters) extends Module {
     Seq.fill(params.threads)(Module(new RegisterFileMem))
   private val loadStoreQueue =
     Seq.fill(params.threads)(Module(new LoadStoreQueue))
+  private val sendReceiveQueue = Module(new SendReceiveQueue) //added by akamatsu
   private val dataMemoryBuffer = Module(new DataMemoryBuffer)
 
   private val outputCollector = Module(new OutputCollector2)
@@ -212,6 +214,10 @@ class B4Processor(implicit params: Parameters) extends Module {
 
       /** デコーダとLSQの接続 */
       loadStoreQueue(tid).io.decoders(d) <> decoders(tid)(d).io.loadStoreQueue
+
+      /** デコーダとSRQの接続 */
+      decoders(tid)(d).io.sendReceiveQueue <> sendReceiveQueue.io.decoders(tid)(d)
+      sendReceiveQueue.io.decoders(tid)(d) <> decoders(tid)(d).io.sendReceiveQueue
     }
 
     /** フェッチと分岐結果の接続 */
@@ -221,11 +227,18 @@ class B4Processor(implicit params: Parameters) extends Module {
     /** LSQと出力コレクタ */
     loadStoreQueue(tid).io.outputCollector := outputCollector.io.outputs(tid)
 
+    /** SRQと出力コレクタ */
+    sendReceiveQueue.io.collectedOutput := outputCollector.io.outputs
+    outputCollector.io.sendReceiveQueue <> sendReceiveQueue.io.recevedData
+
     /** レジスタファイルとリオーダバッファ */
     registerFile(tid).io.reorderBuffer <> reorderBuffer(tid).io.registerFile
 
     /** フェッチとLSQの接続 */
     fetch(tid).io.loadStoreQueueEmpty := loadStoreQueue(tid).io.empty
+
+    /** フェッチとSRQの接続 */
+    fetch(tid).io.sendReceiveQueueEmpty := sendReceiveQueue.io.empty
 
     /** フェッチとリオーダバッファの接続 */
     fetch(tid).io.reorderBufferEmpty := reorderBuffer(tid).io.isEmpty
@@ -238,6 +251,9 @@ class B4Processor(implicit params: Parameters) extends Module {
 
     /** リオーダバッファとLSQ */
     reorderBuffer(tid).io.loadStoreQueue <> loadStoreQueue(tid).io.reorderBuffer
+
+    /** リオーダバッファとSRQ */
+    reorderBuffer(tid).io.sendReceiveQueue <> sendReceiveQueue.io.reorderBuffer(tid)
 
     /** 命令メモリと命令キャッシュを接続 */
     externalMemoryInterface.io.instruction(tid) <>
@@ -290,3 +306,4 @@ object B4Processor extends App {
     ),
   )
 }
+

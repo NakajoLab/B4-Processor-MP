@@ -9,6 +9,7 @@ import b4processor.connections.{
   LoadStoreQueue2ReorderBuffer,
   ReorderBuffer2CSR,
   ReorderBuffer2RegisterFile,
+  SendReceiveQueue2ReorderBuffer,
 }
 import b4processor.riscv.{CSRs, Causes}
 import b4processor.utils.RVRegister.{AddRegConstructor, AddUIntRegConstructor}
@@ -50,6 +51,10 @@ class ReorderBuffer(implicit params: Parameters) extends Module {
     val loadStoreQueue = Vec(
       params.maxRegisterFileCommitCount,
       Valid(new LoadStoreQueue2ReorderBuffer),
+    )
+    val sendReceiveQueue = Vec(                   //added by Akamatsu
+      params.maxRegisterFileCommitCount,
+      Valid(new SendReceiveQueue2ReorderBuffer),
     )
     val isEmpty = Output(Bool())
     val csr = new ReorderBuffer2CSR
@@ -118,48 +123,77 @@ class ReorderBuffer(implicit params: Parameters) extends Module {
     lsq.valid := false.B
     lsq.bits := 0.U.asTypeOf(new LoadStoreQueue2ReorderBuffer)
   }
-  for (((rf, lsq), i) <- io.registerFile.zip(io.loadStoreQueue).zipWithIndex) {
+  for (srq <- io.sendReceiveQueue) { //added by akamatsu
+    srq.valid := false.B
+    srq.bits := 0.U.asTypeOf(new SendReceiveQueue2ReorderBuffer)
+  }
+  // レジスタファイルとロードストアキューへのコミット
+  for ((((rf, lsq), srq), i) <- io.registerFile.zip(io.loadStoreQueue).zip(io.sendReceiveQueue).zipWithIndex) { //added by akamatsu
+    // プレフィックスの表示（デバッグ目的）
     prefix(s"to_rf$i") {
+      // リオーダーバッファのインデックスを計算
       val index = tail + i.U
+      // リオーダーバッファのエントリを取得
       val biVal = buffer(index)
 
+      // Load-Store Queueへの書き込み
+      // インデックスが0の場合、ストア命令の場合にキューにデータを書き込む
       if (i == 0) when(biVal.operationInorder) {
-        lsq.valid := true.B
-        lsq.bits.destinationTag.id := index
-        lsq.bits.destinationTag.threadId := io.threadId
-        biVal.operationInorder := false.B
+        when(biVal.isSendReceiveOp){ //added by akamatsu
+          srq.valid := true.B
+          srq.bits.destinationTag.id := index
+          srq.bits.destinationTag.threadId := io.threadId
+          biVal.operationInorder := false.B
+        }.otherwise{
+          lsq.valid := true.B
+          lsq.bits.destinationTag.id := index
+          lsq.bits.destinationTag.threadId := io.threadId
+          biVal.operationInorder := false.B
+        }
       }
 
+      // エラーフラグの確認
       val isError = biVal.isError
-      val instructionOk =
-        (biVal.valueReady || isError) && !biVal.operationInorder
+      // 命令が実行可能かどうかの確認
+      val instructionOk = (biVal.valueReady || isError) && !biVal.operationInorder
+      // 命令がコミット可能かどうかの確認
       val canCommit = lastValid && index =/= head && instructionOk
 
+      // レジスタファイルへの書き込み
       rf.valid := canCommit
       rf.bits.value := 0.U
       rf.bits.destinationRegister := 0.reg
       when(canCommit) {
+        // エラーが発生していない場合
         when(!isError) {
+          // レジスタファイルにデータを書き込み
           rf.bits.value := biVal.value
           rf.bits.destinationRegister := biVal.destinationRegister
-          when(
-            index === registerTagMap(biVal.destinationRegister.inner).tagId,
-          ) {
+          // 対応するレジスタへのタグをリセット
+          when(index === registerTagMap(biVal.destinationRegister.inner).tagId) {
             registerTagMap(biVal.destinationRegister.inner) :=
               RegisterTagMapContent.default
           }
         }.otherwise {
+          // エラーが発生した場合、例外処理とエラーフラグの設定
           io.csr.mcause.valid := true.B
           io.csr.mcause.bits := biVal.value
           io.csr.mepc.valid := true.B
           io.csr.mepc.bits := biVal.programCounter
           io.isError := true.B
         }
+        // リオーダーバッファエントリのリセット
         biVal := ReorderBufferEntry.default
       }
+      // 最後のコミットの有効性を更新
       lastValid = canCommit
     }
   }
+
+
+
+
+
   private val tailDelta = MuxCase(
     params.maxRegisterFileCommitCount.U,
     io.registerFile.zipWithIndex.map { case (entry, index) =>
@@ -179,6 +213,7 @@ class ReorderBuffer(implicit params: Parameters) extends Module {
           val entry = Wire(new ReorderBufferEntry)
           entry.destinationRegister := decoder.destination.destinationRegister
           entry.operationInorder := decoder.destination.operationInorder
+          entry.isSendReceiveOp := decoder.operationSendReceive //added by akamatsu
           entry.programCounter := decoder.programCounter
           entry.isError := decoder.isDecodeError
           entry.value := Mux(

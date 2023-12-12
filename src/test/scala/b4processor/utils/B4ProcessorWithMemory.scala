@@ -24,7 +24,7 @@ class B4ProcessorWithMemory()(implicit params: Parameters) extends Module {
     }
   })
   val core = Module(new B4Processor)
-  val axiMemory = Module(new SimpleAXIMemoryWithSimulationIO(1024 * 1024 * 512))
+  val axiMemory = Module(new SimpleAXIMemoryWithSimulationIO(1024*1024*512))
   core.axi <> axiMemory.axi
   io.simulation <> axiMemory.simulationSource.input
 

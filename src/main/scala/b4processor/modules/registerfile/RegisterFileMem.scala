@@ -41,7 +41,7 @@ class RegisterFileMem(implicit params: Parameters) extends Module {
   for ((rb, i) <- io.reorderBuffer.zipWithIndex) {
     prefix(s"in$i") {
       val valid = rb.valid && rb.bits.destinationRegister =/= 0.reg
-      // この先のレジスらにかぶりがある
+      // この先のレジスタにかぶりがある
       val overlapping =
         if (io.reorderBuffer.drop(i + 1).nonEmpty)
           io.reorderBuffer

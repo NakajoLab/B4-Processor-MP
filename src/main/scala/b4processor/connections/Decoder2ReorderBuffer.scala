@@ -18,6 +18,7 @@ class Decoder2ReorderBuffer(implicit params: Parameters) extends Bundle {
   // 全体をDecoupledにするとsource1などがすべてOutputにってしまって、間違っているのでこちらに書く
   val ready = Input(Bool())
   val valid = Output(Bool())
+  val operationSendReceive = Output(Bool())
 
   class SourceRegister extends Bundle {
     val sourceRegister = Output(new RVRegister())

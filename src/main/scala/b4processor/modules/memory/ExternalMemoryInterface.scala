@@ -250,7 +250,7 @@ class ExternalMemoryInterface(implicit params: Parameters) extends Module {
       import io.coordinator.writeAddress._
       valid := true.B
       bits.ADDR := writeTransactionQueue.bits.data.address
-      bits.LEN := writeTransactionQueue.bits.data.burstLen
+      bits.LEN := 0.U
       bits.SIZE := BurstSize.Size8
       bits.BURST := BurstType.Incr
       bits.CACHE := "b0010".U

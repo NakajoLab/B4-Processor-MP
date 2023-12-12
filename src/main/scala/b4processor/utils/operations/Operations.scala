@@ -30,6 +30,7 @@ class Operations extends Bundle {
   val fence_i = Bool()
   val compressed = Bool()
   val csrOp = OptionalBundle(CSROperation())
+  val sendReceiveOp = OptionalBundle(SendReceiveOperation()) //added by akamatsu
 //  val csrAddress = UInt(12.W)
   val amoOp = OptionalBundle(AMOOperation.Type())
   val amoWidth = AMOOperationWidth.Type()
@@ -98,6 +99,7 @@ object Operations {
     _.amoWidth -> AMOOperationWidth.Word,
     _.amoOrdering -> AMOOrdering(false.B, false.B),
     _.pextOp -> invalid(PExtensionOperation.Type()),
+    _.sendReceiveOp -> invalid(SendReceiveOperation.Type()), //added by akamatsu
   )
 
   implicit class UIntAccess(u: UInt) {
@@ -191,6 +193,14 @@ object Operations {
       (u, _) => u.useRs2AsStoreSrc -> true.B,
     )
 
+  def sendReceiveOp(op: SendReceiveOperation.Type): (UInt, UInt) => Operations = //added by akamatsu
+    createOperation(
+      (u, _) => u.sendReceiveOp -> valid(op),
+      _.sources(0).reg -> _(19, 15).reg,
+      _.sources(1).reg -> _(24, 20).reg,
+      _.rd -> _(11, 7).reg,
+    )
+
   def csrOp(op: CSROperation.Type): (UInt, UInt) => Operations =
     createOperation(
       _.rd -> _(11, 7).reg,
@@ -202,7 +212,7 @@ object Operations {
 
   def csrImmOp(op: CSROperation.Type): (UInt, UInt) => Operations =
     createOperation(
-      _.rd -> _(11, 7).reg,
+      (operations, int) => operations.rd -> int(11, 7).reg,
       _.sources(0).value -> _(19, 15),
       (u, _) => u.sources(0).valid -> true.B,
       _.sources(1).value -> _(31, 20),
@@ -235,6 +245,8 @@ object Operations {
       IType("ANDI") -> itypeOp(ALUOperation.And),
       IType("ORI") -> itypeOp(ALUOperation.Or),
       IType("XORI") -> itypeOp(ALUOperation.Xor),
+      IType("SND") -> sendReceiveOp(SendReceiveOperation.Send), //added by akamatsu
+      IType("RCV") -> sendReceiveOp(SendReceiveOperation.Receive), //added by akamatsu
 //      I64Type("SLLI") -> itypeOp(ALUOperation.Sll),
 //      I64Type("SRLI") -> itypeOp(ALUOperation.Srl),
 //      I64Type("SRAI") -> itypeOp(ALUOperation.Sra),
@@ -1001,7 +1013,7 @@ object ALUOperation extends ChiselEnum {
   val BranchEqual, BranchNotEqual, BranchLessThan, BranchGreaterThanOrEqual,
     BranchLessThanUnsigned, BranchGreaterThanOrEqualUnsigned, Add, Sub, And, Or,
     Slt, Sltu, Xor, Sll, Srl, Sra, AddJALR, AddJAL, AddW, SllW, SrlW, SraW,
-    SubW = Value
+    SubW, Snd, Rcv = Value
 }
 
 object LoadStoreOperation extends ChiselEnum {
@@ -1036,4 +1048,8 @@ object LoadStoreWidth extends ChiselEnum {
 
 object CSROperation extends ChiselEnum {
   val ReadWrite, ReadSet, ReadClear = Value
+}
+
+object SendReceiveOperation extends ChiselEnum { //added by akamatsu
+  val Send, Receive = Value
 }

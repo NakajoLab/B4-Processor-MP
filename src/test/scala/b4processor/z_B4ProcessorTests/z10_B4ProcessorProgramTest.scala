@@ -22,6 +22,20 @@ class z10_B4ProcessorProgramTest
   val backendAnnotation = IcarusBackendAnnotation
   val WriteWaveformAnnotation = WriteFstAnnotation
 
+  // sendプログラムが実行できる
+  it should "execute send with 2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 2, decoderPerThread = 1),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.initialize("programs/riscv-sample-programs/send")
+        c.checkForRegister(13, 20, 200)
+      }
+  }
   // branchプログラムが実行できる
   it should "execute branch with no parallel" in {
     test(

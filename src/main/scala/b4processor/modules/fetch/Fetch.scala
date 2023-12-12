@@ -32,6 +32,9 @@ class Fetch(wfiWaitWidth: Int = 10)(implicit params: Parameters)
     /** ロードストアキューが空である */
     val loadStoreQueueEmpty = Input(Bool())
 
+    /** SendReceiveQueueが空である */
+    val sendReceiveQueueEmpty = Input(Bool())
+
     /** 実行ユニットから分岐先の計算結果が帰ってきた */
     val collectedBranchAddresses = Flipped(new CollectedBranchAddresses)
 
@@ -148,7 +151,7 @@ class Fetch(wfiWaitWidth: Int = 10)(implicit params: Parameters)
     }
     when(waiting === WaitingReason.Fence || waiting === WaitingReason.FenceI) {
       when(
-        io.reorderBufferEmpty && io.loadStoreQueueEmpty && io.fetchBuffer.empty,
+        io.reorderBufferEmpty && io.loadStoreQueueEmpty && io.fetchBuffer.empty && io.sendReceiveQueueEmpty,
       ) {
         waiting := WaitingReason.None
         pc := pc + 4.U

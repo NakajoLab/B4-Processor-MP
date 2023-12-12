@@ -26,7 +26,7 @@ case class Parameters(
   executors: Int = 2,
   loadStoreQueueIndexWidth: Int = 3,
   loadStoreQueueCheckLength: Int = 3,
-  decoderPerThread: Int = 2,
+  decoderPerThread: Int = 1,
   threads: Int = 2,
   maxRegisterFileCommitCount: Int = 1,
   maxDataMemoryCommitCount: Int = 1,
@@ -37,4 +37,6 @@ case class Parameters(
   debug: Boolean = false,
   enablePExt: Boolean = false,
   pextExecutors: Int = 1,
+  sendReceiveQueueIndexWidth: Int = 3,
+  sendReceiveQueueCheckLength: Int = 3,
 )

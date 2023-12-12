@@ -8,7 +8,7 @@ import chisel3.util._
 import _root_.circt.stage.ChiselStage
 import b4processor.modules.Decoder2AtomicLSU
 import b4processor.modules.reservationstation.ReservationStationEntry
-import b4processor.utils.operations.{DecodingMod, LoadStoreOperation}
+import b4processor.utils.operations.{DecodingMod, LoadStoreOperation, SendReceiveOperation} //added by akamatsu
 
 /** デコーダ
   */
@@ -23,6 +23,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
 
     val reservationStation = new Decoder2ReservationStation
     val loadStoreQueue = Decoupled(new Decoder2LoadStoreQueue)
+    val sendReceiveQueue = Decoupled(new Decoder2SendReceiveQueue) //added by akamatsu
     val csr = Decoupled(new Decoder2CSRReservationStation())
     val amo = Decoupled(new Decoder2AtomicLSU)
   })
@@ -37,7 +38,10 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   val operationInorder =
     LoadStoreOperation.Store === operations.loadStoreOp.validDataOrZero ||
       operations.amoOp.isValid ||
-      operations.csrOp.isValid
+      operations.csrOp.isValid ||
+      SendReceiveOperation.Send === operations.sendReceiveOp.validDataOrZero // added by akamatsu+
+
+  val operationSendRaceive = operations.sendReceiveOp.isValid
 
   // リオーダバッファへの入力
   io.reorderBuffer.sources zip operations.sources foreach { case (rob, o) =>
@@ -46,6 +50,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   io.reorderBuffer.destination.destinationRegister := operations.rd
   io.reorderBuffer.destination.operationInorder := operationInorder
   io.reorderBuffer.programCounter := io.instructionFetch.bits.programCounter
+  io.reorderBuffer.operationSendReceive := operationSendRaceive
 
   // レジスタファイルへの入力
   io.registerFile.sourceRegisters zip operations.sources foreach {
@@ -59,8 +64,13 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
     sourceTags(2).valid := false.B
     sourceTags(2).bits := Tag(io.threadId, 0.U)
   }
-  sourceTags.foreach(s => s.bits.threadId := io.threadId)
   val destinationTag = io.reorderBuffer.destination.destinationTag
+
+  for (s <- sourceTags) {
+    when(s.valid) {
+      assert(s.bits =/= destinationTag, "tag wrong?")
+    }
+  }
 
   // Valueの選択
   val values = Wire(Vec(3, Valid(UInt(64.W))))
@@ -72,7 +82,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
     values(2) := 0.U.asTypeOf(Valid(UInt(64.W)))
 
   // 命令をデコードするのはリオーダバッファにエントリの空きがあり、リザベーションステーションにも空きがあるとき
-  io.instructionFetch.ready := io.reservationStation.ready && io.reorderBuffer.ready && io.loadStoreQueue.ready && io.csr.ready && io.amo.ready
+  io.instructionFetch.ready := io.reservationStation.ready && io.reorderBuffer.ready && io.loadStoreQueue.ready && io.csr.ready && io.amo.ready && io.sendReceiveQueue.ready
   // リオーダバッファやリザベーションステーションに新しいエントリを追加するのは命令がある時
   io.reorderBuffer.valid := io.instructionFetch.ready &&
     io.instructionFetch.valid
@@ -130,6 +140,29 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   io.loadStoreQueue.bits.storeDataTag.threadId := io.threadId
   io.loadStoreQueue.bits.addressTag.threadId := io.threadId
 
+  /** added for SRQ */
+  // send or receive命令の場合，SRQへ発送 added by akamatsu
+  io.sendReceiveQueue.bits := 0.U.asTypeOf(new Decoder2SendReceiveQueue)
+  io.sendReceiveQueue.valid := io.sendReceiveQueue.ready && io.instructionFetch.ready && io.instructionFetch.valid && operations.sendReceiveOp.isValid
+  when(io.sendReceiveQueue.valid) {
+    io.sendReceiveQueue.bits.operation := operations.sendReceiveOp.validDataOrZero
+    io.sendReceiveQueue.bits.destinationReg := operations.rd
+    io.sendReceiveQueue.bits.destinationTag.id := destinationTag.id
+    when(operationInorder) {
+      io.sendReceiveQueue.bits.destinationTag.threadId := values(0).bits //自身のThreadIDではなく送信先のThreadIDを指定
+      io.sendReceiveQueue.bits.sendData := values(1).bits
+      io.sendReceiveQueue.bits.sendDataTag := sourceTags(1).bits
+      io.sendReceiveQueue.bits.sendDataValid := values(1).valid
+    }.otherwise {
+      io.sendReceiveQueue.bits.destinationTag.threadId := destinationTag.threadId
+      io.sendReceiveQueue.bits.sendDataTag.threadId := values(0).bits
+      io.sendReceiveQueue.bits.sendDataTag.id := 0.U
+      io.sendReceiveQueue.bits.sendData := 0.U
+      io.sendReceiveQueue.bits.sendDataValid := true.B
+    }
+  }
+
+
   io.csr.valid := io.csr.ready && io.instructionFetch.ready && io.instructionFetch.valid & operations.csrOp.isValid
   io.csr.bits := 0.U.asTypeOf(new Decoder2CSRReservationStation)
   when(io.csr.valid) {
@@ -177,6 +210,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   takesEveryValue(io.reorderBuffer.valid)
   takesEveryValue(io.reservationStation.entry.valid)
   takesEveryValue(io.loadStoreQueue.valid)
+  takesEveryValue(io.sendReceiveQueue.valid)
   takesEveryValue(io.csr.valid)
   takesEveryValue(io.amo.valid)
 
