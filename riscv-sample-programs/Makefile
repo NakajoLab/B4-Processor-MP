@@ -18,6 +18,15 @@ SUBDIRS := fibonacci \
 			illegal_inst \
 			io_test \
 			pext_test \
+			send \
+			sum_amo_2_c \
+			sum_send_2_c \
+			sum_send_4_c \
+#			sum_amo_4_c \
+#			sum_amo_8_c \
+#			sum_amo_16_c \
+#			sum_send_8_c \
+#			sum_send_16_c \
 #			simple_loader_uart \
 
 all: $(SUBDIRS)

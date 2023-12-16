@@ -16,8 +16,8 @@ class Decoder2SendReceiveQueue(implicit params: Parameters) extends Bundle {
   /** Send命令とReceive命令を区別 */
   val operation = SendReceiveOperation()
 
-  /** 送信先のレジスタ番号 & ThreadIDを送る */
-  val destinationReg = new RVRegister //rs1: threadid rd: register num
+  /** channel & ThreadIDを送る */
+  val channel = UInt(8.W)
   val destinationTag = new Tag
 
   /** sendデータ */

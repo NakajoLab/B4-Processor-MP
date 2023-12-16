@@ -36,6 +36,47 @@ class z10_B4ProcessorProgramTest
         c.checkForRegister(13, 20, 200)
       }
   }
+  // sum_amoプログラムが実行できる
+  it should "execute sum_amo with 2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 2, decoderPerThread = 1),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.initialize("programs/riscv-sample-programs/sum_amo_2_c")
+        c.checkForRegister(13, 20, 200)
+      }
+  }
+  // sum_sendプログラムが実行できる
+  it should "execute sum_send with 2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 2, decoderPerThread = 1),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.initialize("programs/riscv-sample-programs/sum_send_2_c")
+        c.checkForRegister(13, 20, 200)
+      }
+  }
+  it should "execute sum_send with 4 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 4, decoderPerThread = 1),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.initialize("programs/riscv-sample-programs/sum_send_4_c")
+        c.checkForRegister(13, 20, 400)
+      }
+  }
   // branchプログラムが実行できる
   it should "execute branch with no parallel" in {
     test(

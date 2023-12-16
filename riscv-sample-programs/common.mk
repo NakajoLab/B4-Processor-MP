@@ -2,7 +2,7 @@ TOOL_PREFIX := riscv64-none-elf-
 export CC := $(TOOL_PREFIX)gcc
 export OBJCOPY := $(TOOL_PREFIX)objcopy
 export OBJDUMP := $(TOOL_PREFIX)objdump
-export CFLAGS := -nodefaultlibs -nostdlib -march=rv64ic_zicsr -mabi=lp64 -no-pie -static -g -O2
+export CFLAGS := -nodefaultlibs -nostdlib -march=rv64imac_zicsr -mabi=lp64 -no-pie -static -g -O3
 export LINKER_SCRIPT := ../linker.ld
 
 CFLAGS += -T$(LINKER_SCRIPT)

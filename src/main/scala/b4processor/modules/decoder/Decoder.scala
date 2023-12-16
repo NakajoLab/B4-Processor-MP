@@ -60,7 +60,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   // リオーダバッファから一致するタグを取得する
   val sourceTags = Wire(Vec(3, Valid(new Tag)))
   sourceTags := io.reorderBuffer.sources.map(_.matchingTag)
-  if (!params.enablePExt) {
+  if (!params.enablePExt && !params.enableSR) {
     sourceTags(2).valid := false.B
     sourceTags(2).bits := Tag(io.threadId, 0.U)
   }
@@ -78,8 +78,9 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
     case ((rob, rf), st) =>
       ValueSelector.getValue(rob.value, rf, io.outputCollector, st)
   }
-  if (!params.enablePExt)
+  if (!params.enablePExt && !params.enableSR)
     values(2) := 0.U.asTypeOf(Valid(UInt(64.W)))
+
 
   // 命令をデコードするのはリオーダバッファにエントリの空きがあり、リザベーションステーションにも空きがあるとき
   io.instructionFetch.ready := io.reservationStation.ready && io.reorderBuffer.ready && io.loadStoreQueue.ready && io.csr.ready && io.amo.ready && io.sendReceiveQueue.ready
@@ -146,19 +147,20 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   io.sendReceiveQueue.valid := io.sendReceiveQueue.ready && io.instructionFetch.ready && io.instructionFetch.valid && operations.sendReceiveOp.isValid
   when(io.sendReceiveQueue.valid) {
     io.sendReceiveQueue.bits.operation := operations.sendReceiveOp.validDataOrZero
-    io.sendReceiveQueue.bits.destinationReg := operations.rd
     io.sendReceiveQueue.bits.destinationTag.id := destinationTag.id
     when(operationInorder) {
       io.sendReceiveQueue.bits.destinationTag.threadId := values(0).bits //自身のThreadIDではなく送信先のThreadIDを指定
       io.sendReceiveQueue.bits.sendData := values(1).bits
       io.sendReceiveQueue.bits.sendDataTag := sourceTags(1).bits
       io.sendReceiveQueue.bits.sendDataValid := values(1).valid
+      io.sendReceiveQueue.bits.channel := values(2).bits
     }.otherwise {
       io.sendReceiveQueue.bits.destinationTag.threadId := destinationTag.threadId
       io.sendReceiveQueue.bits.sendDataTag.threadId := values(0).bits
+      io.sendReceiveQueue.bits.channel := values(1).bits
       io.sendReceiveQueue.bits.sendDataTag.id := 0.U
       io.sendReceiveQueue.bits.sendData := 0.U
-      io.sendReceiveQueue.bits.sendDataValid := true.B
+      io.sendReceiveQueue.bits.sendDataValid := false.B
     }
   }
 

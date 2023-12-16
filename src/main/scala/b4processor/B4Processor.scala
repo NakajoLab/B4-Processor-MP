@@ -267,6 +267,7 @@ class B4Processor(implicit params: Parameters) extends Module {
   externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory
   dataMemoryBuffer.io.output <> outputCollector.io.dataMemory
   externalMemoryInterface.io.amo <> amo.io.memory
+
 }
 
 class B4ProcessorFixedPorts(implicit params: Parameters) extends RawModule {

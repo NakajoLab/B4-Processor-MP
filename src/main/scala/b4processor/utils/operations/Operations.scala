@@ -193,13 +193,23 @@ object Operations {
       (u, _) => u.useRs2AsStoreSrc -> true.B,
     )
 
-  def sendReceiveOp(op: SendReceiveOperation.Type): (UInt, UInt) => Operations = //added by akamatsu
+  def receiveOp(op: SendReceiveOperation.Type): (UInt, UInt) => Operations = //added by akamatsu
     createOperation(
       (u, _) => u.sendReceiveOp -> valid(op),
       _.sources(0).reg -> _(19, 15).reg,
       _.sources(1).reg -> _(24, 20).reg,
       _.rd -> _(11, 7).reg,
     )
+
+  def sendOp(op: SendReceiveOperation.Type): (UInt, UInt) => Operations = //added by akamatsu
+    createOperation(
+      (u, _) => u.sendReceiveOp -> valid(op),
+      _.sources(0).reg -> _(19, 15).reg,
+      _.sources(1).reg -> _(24, 20).reg,
+      _.sources(2).reg -> _(31, 27).reg,
+      _.rd -> _(11, 7).reg,
+    )
+
 
   def csrOp(op: CSROperation.Type): (UInt, UInt) => Operations =
     createOperation(
@@ -245,8 +255,8 @@ object Operations {
       IType("ANDI") -> itypeOp(ALUOperation.And),
       IType("ORI") -> itypeOp(ALUOperation.Or),
       IType("XORI") -> itypeOp(ALUOperation.Xor),
-      IType("SND") -> sendReceiveOp(SendReceiveOperation.Send), //added by akamatsu
-      IType("RCV") -> sendReceiveOp(SendReceiveOperation.Receive), //added by akamatsu
+      IType("SND") -> sendOp(SendReceiveOperation.Send), //added by akamatsu
+      IType("RCV") -> receiveOp(SendReceiveOperation.Receive), //added by akamatsu
 //      I64Type("SLLI") -> itypeOp(ALUOperation.Sll),
 //      I64Type("SRLI") -> itypeOp(ALUOperation.Srl),
 //      I64Type("SRAI") -> itypeOp(ALUOperation.Sra),

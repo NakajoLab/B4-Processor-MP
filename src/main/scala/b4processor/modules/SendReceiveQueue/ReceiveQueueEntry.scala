@@ -21,8 +21,8 @@ class ReceiveQueueEntry(implicit params: Parameters) extends Bundle {
   /** 命令自体を識別するためのタグ(Destination Tag) */
   val destinationTag = new Tag
 
-  /** 受信先のレジスタ */
-  val destinationRegister = new RVRegister
+  /** channel */
+  val channel = UInt(8.W)
 
   /** Sendに使用するデータが格納されるタグ(SourceRegister2 Tag) */
   val sendDataTag = new Tag
@@ -34,7 +34,7 @@ class ReceiveQueueEntry(implicit params: Parameters) extends Bundle {
 object ReceiveQueueEntry {
   def validEntry(
                   destinationTag: Tag,
-                  destinationRegister: RVRegister,
+                  channel: UInt,
                   sendDataTag: Tag,
                   opIsDone: Bool,
                 )(implicit params: Parameters): ReceiveQueueEntry = {
@@ -42,7 +42,7 @@ object ReceiveQueueEntry {
     entry.valid := true.B
 
     entry.destinationTag := destinationTag
-    entry.destinationRegister := destinationRegister
+    entry.channel := channel
 
     entry.sendDataTag := sendDataTag
 
@@ -57,7 +57,7 @@ object ReceiveQueueEntry {
     entry.readyReorderSign := false.B
 
     entry.destinationTag := Tag(0, 0)
-    entry.destinationRegister := DontCare
+    entry.channel := 0.U
 
     entry.sendDataTag := Tag(0, 0)
 

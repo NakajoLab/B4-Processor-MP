@@ -81,7 +81,7 @@ class SendReceiveQueue(implicit params: Parameters)
         when(decoder.bits.operation === SendReceiveOperation.Send){
           sendbuffer(sendInsertIndex) := SendQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
-            destinationRegister = decoder.bits.destinationReg,
+            channel = decoder.bits.channel,
             sendDataTag = decoder.bits.sendDataTag,
             sendData = decoder.bits.sendData,
             sendDataValid = decoder.bits.sendDataValid,
@@ -90,7 +90,7 @@ class SendReceiveQueue(implicit params: Parameters)
         }.elsewhen(decoder.bits.operation === SendReceiveOperation.Receive){
           receivebuffer(receiveInsertIndex) := ReceiveQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
-            destinationRegister = decoder.bits.destinationReg,
+            channel = decoder.bits.channel,
             sendDataTag = decoder.bits.sendDataTag,
             opIsDone = false.B,
           )
@@ -110,7 +110,7 @@ class SendReceiveQueue(implicit params: Parameters)
       when(o.valid) {
         for (buf <- sendbuffer) {
           when(buf.sendDataTag === o.bits.tag && !buf.sendDataValid) {
-            buf.sendDataTag := Tag(0, 0) //naze?
+            //buf.sendDataTag := Tag(0, 0) //naze?
             buf.sendData := o.bits.value
             buf.sendDataValid := true.B
           }
@@ -133,24 +133,27 @@ class SendReceiveQueue(implicit params: Parameters)
 
   /** send-receive動作 */
   for (sendBuf <- sendbuffer) {
-    when((sendHead =/= sendTail) && (receiveHead =/= receiveTail) && sendBuf.sendDataValid && sendBuf.valid) { //send命令が実行可能な時
+    when((sendHead =/= sendTail) && (receiveHead =/= receiveTail) && sendBuf.valid && sendBuf.sendDataValid) { //send命令が実行可能な時
       for (receiveBuf <- receivebuffer) {
-        when {
+        when (
           receiveBuf.valid && //receive命令があるとき
           sendBuf.destinationTag.threadId === receiveBuf.destinationTag.threadId &&
-          sendBuf.sendDataTag.threadId === receiveBuf.sendDataTag.threadId && //nanka chigau
-          sendBuf.destinationRegister === receiveBuf.destinationRegister
-        } { //send命令とreceive命令が対応しているとき
+          sendBuf.sendDataTag.threadId === receiveBuf.sendDataTag.threadId &&
+          sendBuf.channel === receiveBuf.channel
+        ) { //send命令とreceive命令が対応しているとき
           io.recevedData.valid := true.B
           io.recevedData.bits.value := sendBuf.sendData
           io.recevedData.bits.tag := receiveBuf.destinationTag
           io.recevedData.bits.isError := false.B
           sendBuf.opIsDone := true.B
           receiveBuf.opIsDone := true.B
+          sendBuf.valid := false.B
+          receiveBuf.valid := false.B
         }
       }
     }
   }
+
 
   when(sendbuffer(sendTail).opIsDone && sendHead =/= sendTail) {
     sendTail := sendTail + 1.U

@@ -39,4 +39,5 @@ case class Parameters(
   pextExecutors: Int = 1,
   sendReceiveQueueIndexWidth: Int = 3,
   sendReceiveQueueCheckLength: Int = 3,
+  enableSR: Boolean = true,
 )
