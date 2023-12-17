@@ -54,7 +54,7 @@ class z10_B4ProcessorProgramTest
   it should "execute sum_send with 2 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, decoderPerThread = 1, tagWidth = 6),
+        defaultParams.copy(threads = 2, decoderPerThread = 4, tagWidth = 6),
       ),
     )
       .withAnnotations(
@@ -67,7 +67,7 @@ class z10_B4ProcessorProgramTest
   it should "execute sum_send with 4 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 4, decoderPerThread = 1, tagWidth = 6),
+        defaultParams.copy(threads = 4, executors = 8, decoderPerThread = 2, tagWidth = 6),
       ),
     )
       .withAnnotations(

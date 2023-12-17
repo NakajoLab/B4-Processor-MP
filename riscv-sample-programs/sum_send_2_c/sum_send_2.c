@@ -1,4 +1,4 @@
-#define ROOP_NUM 8
+#define ROOP_NUM 16
 
 void send(long rs1, long rs2, long rs3){
     long zero;
@@ -18,7 +18,7 @@ long receive(long rd, long rs1, long rs2) {
 
 long thread0(int data[]){
     long i,l,t;
-    int n,m;
+    int n;
     long result = 0;
     t = 1;
     for(n=0; n<ROOP_NUM; n++){
@@ -30,7 +30,7 @@ long thread0(int data[]){
 }
 
 void thread1(int data[]){
-    long i,l,t,zero=0;
+    long i,l,t;
     int n;
     t = 0;
     for(n=0; n<ROOP_NUM; n++){

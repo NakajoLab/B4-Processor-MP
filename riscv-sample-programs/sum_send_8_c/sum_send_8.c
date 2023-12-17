@@ -1,4 +1,4 @@
-#define ROOP_NUM 4
+#define ROOP_NUM 1
 
 void send(long rs1, long rs2, long rs3){
     long zero;

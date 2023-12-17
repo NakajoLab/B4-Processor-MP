@@ -20,6 +20,7 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
 
   /** 命令自体を識別するためのタグ(Destination Tag) */
   val destinationTag = new Tag
+  val destinationTagValid = Bool()
 
   /** channel */
   val channel = UInt(8.W)
@@ -28,6 +29,7 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
 
   /** Sendに使用するデータが格納されるタグ(SourceRegister2 Tag) */
   val sendDataTag = new Tag
+  val sendDataTagValid = Bool()
 
   /** Sendデータ */
   val sendData = UInt(64.W)
@@ -42,10 +44,12 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
 object SendQueueEntry {
   def validEntry(
                   destinationTag: Tag,
+                  destinationTagValid: Bool,
                   channel: UInt,
                   channelTag: Tag,
                   channelValid: Bool,
                   sendDataTag: Tag,
+                  sendDataTagValid: Bool,
                   sendData: UInt,
                   sendDataValid: Bool,
                   opIsDone: Bool,
@@ -54,12 +58,14 @@ object SendQueueEntry {
     entry.valid := true.B
 
     entry.destinationTag := destinationTag
+    entry.destinationTagValid := destinationTagValid
 
     entry.channel := channel
     entry.channelTag := channelTag
     entry.channelValid := channelValid
 
     entry.sendDataTag := sendDataTag
+    entry.sendDataTagValid := sendDataTagValid
     entry.sendData := sendData
     entry.sendDataValid := sendDataValid
 
@@ -74,11 +80,14 @@ object SendQueueEntry {
     entry.readyReorderSign := false.B
 
     entry.destinationTag := Tag(0, 0)
+    entry.destinationTagValid := false.B
+
     entry.channel := 0.U
     entry.channelTag := Tag(0, 0)
     entry.channelValid := false.B
 
     entry.sendDataTag := Tag(0, 0)
+    entry.sendDataTagValid := false.B
     entry.sendData := 0.U
     entry.sendDataValid := false.B
 

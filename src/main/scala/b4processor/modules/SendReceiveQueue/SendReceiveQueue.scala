@@ -72,19 +72,16 @@ class SendReceiveQueue(implicit params: Parameters)
       decoder.ready := (sendTail =/= sendInsertIndex + 1.U) && (receiveTail =/= receiveInsertIndex + 1.U) //not full
       val entryValid = decoder.ready && decoder.valid
 
-      /** 現状，(LSQの最大エントリ数 = リオーダバッファの最大エントリ数)であり，
-       * プロセッサで同時実行可能な最大命令数がリオーダバッファのエントリ番号数(dtag数)であることから，
-       * エンキュー時の命令待機は必要ないが，LSQのエントリ数を減らした場合，必要
-       */
-
       when(entryValid) {
         when(decoder.bits.operation === SendReceiveOperation.Send){
           sendbuffer(sendInsertIndex) := SendQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
+            destinationTagValid = decoder.bits.destinationTagValid,
             channel = decoder.bits.channel,
             channelTag = decoder.bits.channelTag,
             channelValid = decoder.bits.channelValid,
             sendDataTag = decoder.bits.sendDataTag,
+            sendDataTagValid = decoder.bits.sendDataTagValid,
             sendData = decoder.bits.sendData,
             sendDataValid = decoder.bits.sendDataValid,
             opIsDone = false.B,
@@ -92,16 +89,18 @@ class SendReceiveQueue(implicit params: Parameters)
         }.elsewhen(decoder.bits.operation === SendReceiveOperation.Receive){
           receivebuffer(receiveInsertIndex) := ReceiveQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
+            destinationTagValid = decoder.bits.destinationTagValid,
             channel = decoder.bits.channel,
             channelTag = decoder.bits.channelTag,
             channelValid = decoder.bits.channelValid,
             sendDataTag = decoder.bits.sendDataTag,
+            sendDataTagValid = decoder.bits.sendDataTagValid,
             opIsDone = false.B,
           )
         }
       }
-      sendInsertIndex = sendInsertIndex + (entryValid && decoder.bits.operation === SendReceiveOperation.Send).asUInt
-      receiveInsertIndex = receiveInsertIndex + (entryValid && decoder.bits.operation === SendReceiveOperation.Receive).asUInt
+      sendInsertIndex = sendInsertIndex + (entryValid && (decoder.bits.operation === SendReceiveOperation.Send)).asUInt
+      receiveInsertIndex = receiveInsertIndex + (entryValid && (decoder.bits.operation === SendReceiveOperation.Receive)).asUInt
     }
   }
   sendHead := sendInsertIndex
@@ -114,7 +113,6 @@ class SendReceiveQueue(implicit params: Parameters)
       when(o.valid) {
         for (buf <- sendbuffer) {
           when(buf.sendDataTag === o.bits.tag && !buf.sendDataValid) {
-            //buf.sendDataTag := Tag(0, 0) //naze?
             buf.sendData := o.bits.value
             buf.sendDataValid := true.B
           }
@@ -122,11 +120,27 @@ class SendReceiveQueue(implicit params: Parameters)
             buf.channel := o.bits.value
             buf.channelValid := true.B
           }
+          when(
+            buf.destinationTag.id === o.bits.tag.id &&
+            buf.sendDataTag.threadId === o.bits.tag.threadId &&
+            !buf.destinationTagValid
+            ) {
+            buf.destinationTag.threadId := o.bits.value
+            buf.destinationTagValid := true.B
+          }
         }
         for (buf <- receivebuffer) {
           when(buf.channelTag === o.bits.tag && !buf.channelValid) {
             buf.channel := o.bits.value
             buf.channelValid := true.B
+          }
+          when(
+            buf.sendDataTag.id === o.bits.tag.id &&
+            buf.destinationTag.threadId === o.bits.tag.threadId &&
+            !buf.sendDataTagValid
+          ) {
+            buf.sendDataTag.threadId := o.bits.value
+            buf.sendDataTagValid := true.B
           }
         }
       }
@@ -149,7 +163,8 @@ class SendReceiveQueue(implicit params: Parameters)
   for (sendBuf <- sendbuffer) {
     when(
       (sendHead =/= sendTail) && (receiveHead =/= receiveTail) &&
-       sendBuf.valid && sendBuf.sendDataValid && sendBuf.channelValid
+       sendBuf.valid && sendBuf.sendDataValid && sendBuf.channelValid &&
+       sendBuf.destinationTagValid
     ) { //send命令が実行可能な時
       for (receiveBuf <- receivebuffer) {
         when (
@@ -157,7 +172,7 @@ class SendReceiveQueue(implicit params: Parameters)
           sendBuf.destinationTag.threadId === receiveBuf.destinationTag.threadId &&
           sendBuf.sendDataTag.threadId === receiveBuf.sendDataTag.threadId &&
           sendBuf.channel === receiveBuf.channel &&
-          receiveBuf.channelValid
+          receiveBuf.channelValid && receiveBuf.sendDataTagValid
         ) { //send命令とreceive命令が対応しているとき
           io.recevedData.valid := true.B
           io.recevedData.bits.value := sendBuf.sendData
@@ -171,8 +186,6 @@ class SendReceiveQueue(implicit params: Parameters)
       }
     }
   }
-
-
   when(sendbuffer(sendTail).opIsDone && sendHead =/= sendTail) {
     sendTail := sendTail + 1.U
   }
@@ -181,9 +194,6 @@ class SendReceiveQueue(implicit params: Parameters)
     receiveTail := receiveTail + 1.U
   }
 }
-
-
-
 
 object SendReceiveQueue extends App {
   implicit val params =

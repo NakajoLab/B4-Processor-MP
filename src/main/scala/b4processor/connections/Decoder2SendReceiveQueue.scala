@@ -20,7 +20,9 @@ class Decoder2SendReceiveQueue(implicit params: Parameters) extends Bundle {
   val channel = UInt(8.W)
   val channelTag = new Tag
   val channelValid = Bool()
+
   val destinationTag = new Tag
+  val destinationTagValid = Bool()
 
   /** sendデータ */
   val sendData = UInt(64.W)                       //rs2
@@ -28,6 +30,7 @@ class Decoder2SendReceiveQueue(implicit params: Parameters) extends Bundle {
 
   /** sendデータの値が有効か */
   val sendDataValid = Bool()
+  val sendDataTagValid = Bool()
 
 
   /** 受信先のレジスタ番号とタグ、スレッドIDを送る */
