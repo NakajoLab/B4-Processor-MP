@@ -82,6 +82,8 @@ class SendReceiveQueue(implicit params: Parameters)
           sendbuffer(sendInsertIndex) := SendQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
             channel = decoder.bits.channel,
+            channelTag = decoder.bits.channelTag,
+            channelValid = decoder.bits.channelValid,
             sendDataTag = decoder.bits.sendDataTag,
             sendData = decoder.bits.sendData,
             sendDataValid = decoder.bits.sendDataValid,
@@ -91,6 +93,8 @@ class SendReceiveQueue(implicit params: Parameters)
           receivebuffer(receiveInsertIndex) := ReceiveQueueEntry.validEntry(
             destinationTag = decoder.bits.destinationTag,
             channel = decoder.bits.channel,
+            channelTag = decoder.bits.channelTag,
+            channelValid = decoder.bits.channelValid,
             sendDataTag = decoder.bits.sendDataTag,
             opIsDone = false.B,
           )
@@ -114,6 +118,16 @@ class SendReceiveQueue(implicit params: Parameters)
             buf.sendData := o.bits.value
             buf.sendDataValid := true.B
           }
+          when(buf.channelTag === o.bits.tag && !buf.channelValid) {
+            buf.channel := o.bits.value
+            buf.channelValid := true.B
+          }
+        }
+        for (buf <- receivebuffer) {
+          when(buf.channelTag === o.bits.tag && !buf.channelValid) {
+            buf.channel := o.bits.value
+            buf.channelValid := true.B
+          }
         }
       }
     }
@@ -133,13 +147,17 @@ class SendReceiveQueue(implicit params: Parameters)
 
   /** send-receive動作 */
   for (sendBuf <- sendbuffer) {
-    when((sendHead =/= sendTail) && (receiveHead =/= receiveTail) && sendBuf.valid && sendBuf.sendDataValid) { //send命令が実行可能な時
+    when(
+      (sendHead =/= sendTail) && (receiveHead =/= receiveTail) &&
+       sendBuf.valid && sendBuf.sendDataValid && sendBuf.channelValid
+    ) { //send命令が実行可能な時
       for (receiveBuf <- receivebuffer) {
         when (
           receiveBuf.valid && //receive命令があるとき
           sendBuf.destinationTag.threadId === receiveBuf.destinationTag.threadId &&
           sendBuf.sendDataTag.threadId === receiveBuf.sendDataTag.threadId &&
-          sendBuf.channel === receiveBuf.channel
+          sendBuf.channel === receiveBuf.channel &&
+          receiveBuf.channelValid
         ) { //send命令とreceive命令が対応しているとき
           io.recevedData.valid := true.B
           io.recevedData.bits.value := sendBuf.sendData

@@ -22,7 +22,7 @@ import scala.math.pow
   *   プログラムカウンタの初期値
   */
 case class Parameters(
-  tagWidth: Int = 4,
+  tagWidth: Int = 6,
   executors: Int = 2,
   loadStoreQueueIndexWidth: Int = 3,
   loadStoreQueueCheckLength: Int = 3,
@@ -37,7 +37,7 @@ case class Parameters(
   debug: Boolean = false,
   enablePExt: Boolean = false,
   pextExecutors: Int = 1,
-  sendReceiveQueueIndexWidth: Int = 3,
-  sendReceiveQueueCheckLength: Int = 3,
+  sendReceiveQueueIndexWidth: Int = 5,
+  sendReceiveQueueCheckLength: Int = 5,
   enableSR: Boolean = true,
 )

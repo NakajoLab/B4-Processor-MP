@@ -54,27 +54,27 @@ class z10_B4ProcessorProgramTest
   it should "execute sum_send with 2 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, decoderPerThread = 1),
+        defaultParams.copy(threads = 2, decoderPerThread = 1, tagWidth = 6),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
         c.initialize("programs/riscv-sample-programs/sum_send_2_c")
-        c.checkForRegister(13, 20, 200)
+        c.checkForRegister(10, 2090, 400)
       }
   }
   it should "execute sum_send with 4 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 4, decoderPerThread = 1),
+        defaultParams.copy(threads = 4, decoderPerThread = 1, tagWidth = 6),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
         c.initialize("programs/riscv-sample-programs/sum_send_4_c")
-        c.checkForRegister(13, 20, 400)
+        c.checkForRegister(10, 2090, 400)
       }
   }
   // branchプログラムが実行できる

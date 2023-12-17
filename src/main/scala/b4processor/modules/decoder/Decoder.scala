@@ -39,7 +39,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
     LoadStoreOperation.Store === operations.loadStoreOp.validDataOrZero ||
       operations.amoOp.isValid ||
       operations.csrOp.isValid ||
-      SendReceiveOperation.Send === operations.sendReceiveOp.validDataOrZero // added by akamatsu+
+      operations.sendReceiveOp.isValid // added by akamatsu+
 
   val operationSendRaceive = operations.sendReceiveOp.isValid
 
@@ -148,16 +148,20 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   when(io.sendReceiveQueue.valid) {
     io.sendReceiveQueue.bits.operation := operations.sendReceiveOp.validDataOrZero
     io.sendReceiveQueue.bits.destinationTag.id := destinationTag.id
-    when(operationInorder) {
+    when(operations.sendReceiveOp.bits === SendReceiveOperation.Send) {
       io.sendReceiveQueue.bits.destinationTag.threadId := values(0).bits //自身のThreadIDではなく送信先のThreadIDを指定
       io.sendReceiveQueue.bits.sendData := values(1).bits
       io.sendReceiveQueue.bits.sendDataTag := sourceTags(1).bits
       io.sendReceiveQueue.bits.sendDataValid := values(1).valid
       io.sendReceiveQueue.bits.channel := values(2).bits
+      io.sendReceiveQueue.bits.channelValid := values(2).valid
+      io.sendReceiveQueue.bits.channelTag := sourceTags(2).bits
     }.otherwise {
       io.sendReceiveQueue.bits.destinationTag.threadId := destinationTag.threadId
       io.sendReceiveQueue.bits.sendDataTag.threadId := values(0).bits
       io.sendReceiveQueue.bits.channel := values(1).bits
+      io.sendReceiveQueue.bits.channelValid := values(1).valid
+      io.sendReceiveQueue.bits.channelTag := sourceTags(1).bits
       io.sendReceiveQueue.bits.sendDataTag.id := 0.U
       io.sendReceiveQueue.bits.sendData := 0.U
       io.sendReceiveQueue.bits.sendDataValid := false.B

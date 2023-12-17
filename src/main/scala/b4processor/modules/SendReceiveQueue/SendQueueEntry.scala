@@ -23,6 +23,8 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
 
   /** channel */
   val channel = UInt(8.W)
+  val channelTag = new Tag()
+  val channelValid = Bool()
 
   /** Sendに使用するデータが格納されるタグ(SourceRegister2 Tag) */
   val sendDataTag = new Tag
@@ -41,6 +43,8 @@ object SendQueueEntry {
   def validEntry(
                   destinationTag: Tag,
                   channel: UInt,
+                  channelTag: Tag,
+                  channelValid: Bool,
                   sendDataTag: Tag,
                   sendData: UInt,
                   sendDataValid: Bool,
@@ -50,7 +54,10 @@ object SendQueueEntry {
     entry.valid := true.B
 
     entry.destinationTag := destinationTag
+
     entry.channel := channel
+    entry.channelTag := channelTag
+    entry.channelValid := channelValid
 
     entry.sendDataTag := sendDataTag
     entry.sendData := sendData
@@ -68,6 +75,8 @@ object SendQueueEntry {
 
     entry.destinationTag := Tag(0, 0)
     entry.channel := 0.U
+    entry.channelTag := Tag(0, 0)
+    entry.channelValid := false.B
 
     entry.sendDataTag := Tag(0, 0)
     entry.sendData := 0.U

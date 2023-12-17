@@ -1,4 +1,4 @@
-#define ROOP_NUM 8
+#define ROOP_NUM 4
 
 void send(long rs1, long rs2, long rs3){
     long zero;
@@ -17,16 +17,19 @@ long receive(long rd, long rs1, long rs2) {
 }
 
 long thread0(int data[]){
-    int i,l,t0,t1;
+    int i,l,t0,t1,t2;
     int n,m;
     long result = 0;
     t0 = 1;
     t1 = 2;
+    t2 = 4;
     for(n=0; n<ROOP_NUM; n++){
-        i = data[8*n] + data[8*n+1];
+        i = data[16*n] + data[16*n+1];
         l = receive(l, t0, n);
         result += i + l;
         l = receive(l, t1, n);
+        result += l;
+        l = receive(l, t2, n);
         result += l;
     }
     return result;
@@ -37,7 +40,7 @@ void thread1(int data[]){
     int n;
     t = 0;
     for(n=0; n<ROOP_NUM; n++){
-        i = data[8*n+2] + data[8*n+3];
+        i = data[16*n+2] + data[16*n+3];
         send(t, i, n);
     }
 }
@@ -48,7 +51,7 @@ void thread2(int data[]){
     t0 = 3;
     t1 = 0;
     for(n=0; n<ROOP_NUM; n++){
-        i = data[8*n+4] + data[8*n+5];
+        i = data[16*n+4] + data[16*n+5];
         l = receive(l, t0, n);
         i += l;
         send(t1, i, n);
@@ -60,7 +63,56 @@ void thread3(int data[]){
     int n;
     t = 2;
     for(n=0; n<ROOP_NUM; n++){
-        i = data[8*n+6] + data[8*n+7];
+        i = data[16*n+6] + data[16*n+7];
+        send(t, i, n);
+    }
+}
+
+void thread4(int data[]){
+    int i,l,t0,t1,t2;
+    int n,m;
+    t0 = 5;
+    t1 = 6;
+    t2 = 0;
+    for(n=0; n<ROOP_NUM; n++){
+        i = data[16*n+8] + data[16*n+9];
+        l = receive(l, t0, n);
+        i += l;
+        l = receive(l, t1, n);
+        i += l;
+        send(t2, i, n);
+    }
+}
+
+void thread5(int data[]){
+    int i,l,t;
+    int n;
+    t = 4;
+    for(n=0; n<ROOP_NUM; n++){
+        i = data[16*n+10] + data[16*n+11];
+        send(t, i, n);
+    }
+}
+
+void thread6(int data[]){
+    int i,l,t0,t1;
+    int n;
+    t0 = 7;
+    t1 = 4;
+    for(n=0; n<ROOP_NUM; n++){
+        i = data[16*n+12] + data[16*n+13];
+        l = receive(l, t0, n);
+        i += l;
+        send(t1, i, n);
+    }
+}
+
+void thread7(int data[]){
+    int i,l,t;
+    int n;
+    t = 6;
+    for(n=0; n<ROOP_NUM; n++){
+        i = data[16*n+14] + data[16*n+15];
         send(t, i, n);
     }
 }
@@ -79,8 +131,16 @@ long main(long loop_count){
         thread1(data);
     }else if(tid == 2){
         thread2(data);
-    }else{
+    }else if(tid == 3){
         thread3(data);
+    }else if(tid == 4){
+        thread4(data);
+    }else if(tid == 5){
+        thread5(data);
+    }else if(tid == 6){
+        thread6(data);
+    }else{
+        thread7(data);
     }
     r += 10;//確認用の計算
     return r;

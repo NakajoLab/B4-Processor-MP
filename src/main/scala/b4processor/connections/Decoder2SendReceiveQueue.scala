@@ -18,6 +18,8 @@ class Decoder2SendReceiveQueue(implicit params: Parameters) extends Bundle {
 
   /** channel & ThreadIDを送る */
   val channel = UInt(8.W)
+  val channelTag = new Tag
+  val channelValid = Bool()
   val destinationTag = new Tag
 
   /** sendデータ */
