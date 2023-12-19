@@ -18,7 +18,7 @@ long receive(long rd, long rs1, long rs2) {
 
 long thread0(int data[]){
     int i,l,t0,t1;
-    int n,m;
+    int n;
     long result = 0;
     t0 = 1;
     t1 = 2;

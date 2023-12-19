@@ -12,7 +12,6 @@ _start:
     csrr a0, mhartid
 .L_LOOP:
     addi sp,sp,1024
-    addi sp,sp,1024
     beq a0,zero,.L_PROGRAM
     addi a0,a0,-1
     j .L_LOOP
