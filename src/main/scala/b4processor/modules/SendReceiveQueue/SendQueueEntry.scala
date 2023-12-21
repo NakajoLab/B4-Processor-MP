@@ -39,6 +39,8 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
 
   /** Send-Receiveを実行した */
   val opIsDone = Bool()
+  val valueOutputed = Bool()
+
 }
 
 object SendQueueEntry {
@@ -53,6 +55,7 @@ object SendQueueEntry {
                   sendData: UInt,
                   sendDataValid: Bool,
                   opIsDone: Bool,
+                  valueOutputed: Bool,
                 )(implicit params: Parameters): SendQueueEntry = {
     val entry = SendQueueEntry.default
     entry.valid := true.B
@@ -70,6 +73,7 @@ object SendQueueEntry {
     entry.sendDataValid := sendDataValid
 
     entry.opIsDone := opIsDone
+    entry.valueOutputed := valueOutputed
 
     entry
   }
@@ -92,6 +96,7 @@ object SendQueueEntry {
     entry.sendDataValid := false.B
 
     entry.opIsDone := false.B
+    entry.valueOutputed := false.B
 
     entry
   }

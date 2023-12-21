@@ -37,11 +37,14 @@ class SendReceiveQueue(implicit params: Parameters)
 
   val sendDefaultEntry = SendQueueEntry.default
   val receiveDefaultEntry = ReceiveQueueEntry.default
+  val outputDefaultEntry = OutputBufferEntry.default
 
   val sendHead = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val sendTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val receiveHead = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val receiveTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
+  val outputHead = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
+  val outputTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
     
   io.empty := sendHead === sendTail || receiveHead === receiveTail
   io.full := (sendHead + 1.U === sendTail) || (receiveHead + 1.U === receiveTail)
@@ -59,6 +62,11 @@ class SendReceiveQueue(implicit params: Parameters)
   val receivebuffer = RegInit(
     VecInit(
       Seq.fill(math.pow(2, params.sendReceiveQueueIndexWidth).toInt)(receiveDefaultEntry),
+    ),
+  )
+  val outbuffer = RegInit(
+    VecInit(
+      Seq.fill(math.pow(2, params.sendReceiveQueueIndexWidth).toInt)(outputDefaultEntry),
     ),
   )
 
@@ -85,6 +93,7 @@ class SendReceiveQueue(implicit params: Parameters)
             sendData = decoder.bits.sendData,
             sendDataValid = decoder.bits.sendDataValid,
             opIsDone = false.B,
+            valueOutputed = false.B
           )
         }.elsewhen(decoder.bits.operation === SendReceiveOperation.Receive){
           receivebuffer(receiveInsertIndex) := ReceiveQueueEntry.validEntry(
@@ -161,12 +170,12 @@ class SendReceiveQueue(implicit params: Parameters)
 
   /** send-receive動作 */
   for (sendBuf <- sendbuffer) {
-    when(
-      (sendHead =/= sendTail) && (receiveHead =/= receiveTail) &&
-       sendBuf.valid && sendBuf.sendDataValid && sendBuf.channelValid &&
-       sendBuf.destinationTagValid
-    ) { //send命令が実行可能な時
-      for (receiveBuf <- receivebuffer) {
+    for (receiveBuf <- receivebuffer) {
+      when(
+        (sendHead =/= sendTail) && (receiveHead =/= receiveTail) &&
+        sendBuf.valid && sendBuf.sendDataValid && sendBuf.channelValid &&
+        sendBuf.destinationTagValid && (outputTail =/= outputHead + 1.U)
+        ) { //send命令が実行可能な時
         when (
           receiveBuf.valid && //receive命令があるとき
           sendBuf.destinationTag.threadId === receiveBuf.destinationTag.threadId &&
@@ -174,24 +183,47 @@ class SendReceiveQueue(implicit params: Parameters)
           sendBuf.channel === receiveBuf.channel &&
           receiveBuf.channelValid && receiveBuf.sendDataTagValid
         ) { //send命令とreceive命令が対応しているとき
-          io.recevedData.valid := true.B
-          io.recevedData.bits.value := sendBuf.sendData
-          io.recevedData.bits.tag := receiveBuf.destinationTag
-          io.recevedData.bits.isError := false.B
-          sendBuf.opIsDone := true.B
-          receiveBuf.opIsDone := true.B
-          sendBuf.valid := false.B
-          receiveBuf.valid := false.B
+            sendBuf.destinationTag := receiveBuf.destinationTag
+            sendBuf.opIsDone := true.B
+            receiveBuf.opIsDone := true.B
+            sendBuf.valid := false.B
+            receiveBuf.valid := false.B
         }
       }
     }
   }
+
+  var outputInsertIndex = outputHead
+  for (i <- 0 until math.pow(2, params.sendReceiveQueueIndexWidth).toInt) {
+    val sendBuf = sendbuffer(i)
+    val outBufReady = outputTail =/= outputInsertIndex + 1.U
+    when(sendBuf.opIsDone && !sendBuf.valueOutputed && outBufReady){
+      outbuffer(outputInsertIndex) := OutputBufferEntry.validEntry(
+        destinationTag = sendBuf.destinationTag,
+        value = sendBuf.sendData,
+      )
+      sendBuf.valueOutputed := true.B
+    }
+    when(sendBuf.valueOutputed){
+      sendBuf.valueOutputed := false.B
+      sendBuf.opIsDone := false.B
+    }
+    outputInsertIndex = outputInsertIndex + (sendBuf.opIsDone && !sendBuf.valueOutputed && outBufReady).asUInt
+  }
+  outputHead := outputInsertIndex
+
   when(sendbuffer(sendTail).opIsDone && sendHead =/= sendTail) {
     sendTail := sendTail + 1.U
   }
-
   when(receivebuffer(receiveTail).opIsDone && receiveHead =/= receiveTail) {
     receiveTail := receiveTail + 1.U
+  }
+  when(outbuffer(outputTail).valid && outputHead =/= outputTail){
+    io.recevedData.valid := true.B
+    io.recevedData.bits.value := outbuffer(outputTail).value
+    io.recevedData.bits.tag := outbuffer(outputTail).destinationTag
+    io.recevedData.bits.isError := false.B
+    outputTail := outputTail + 1.U
   }
 }
 
