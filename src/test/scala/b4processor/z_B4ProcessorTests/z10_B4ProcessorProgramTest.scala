@@ -22,18 +22,32 @@ class z10_B4ProcessorProgramTest
   val backendAnnotation = IcarusBackendAnnotation
   val WriteWaveformAnnotation = WriteFstAnnotation
 
-  // sendプログラムが実行できる
-  it should "execute send with 2 parallel thread" in {
+  // Mtypeプログラムが実行できる
+  it should "execute Mtype with no parallel" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, decoderPerThread = 1),
+        defaultParams.copy(threads = 1, executors = 1, decoderPerThread = 1, tagWidth = 5),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.initialize("programs/riscv-sample-programs/send")
-        c.checkForRegister(13, 20, 200)
+        c.initialize("programs/riscv-sample-programs/Mtype_c")
+        c.checkForRegister(13, 20, 1000)
+      }
+  }
+  // sendプログラムが実行できる
+  it should "execute send with 2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 2, tagWidth = 8),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.initialize("programs/riscv-sample-programs/send_2_c")
+        c.checkForRegister(13, 20, 1000)
       }
   }
   // sumプログラムが実行できる

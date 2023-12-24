@@ -4,6 +4,7 @@ import circt.stage.ChiselStage
 import b4processor.Parameters
 import b4processor.modules.PExt.PExtensionOperation
 import b4processor.riscv.Instructions
+import b4processor.riscv.Instructions.{M64Type, MType}
 import b4processor.utils.BundleInitialize.AddBundleInitializeConstructor
 import b4processor.utils.RVRegister
 import b4processor.utils.RVRegister.{AddRegConstructor, AddUIntRegConstructor}
@@ -257,6 +258,12 @@ object Operations {
       IType("XORI") -> itypeOp(ALUOperation.Xor),
       IType("SND") -> sendOp(SendReceiveOperation.Send), //added by akamatsu
       IType("RCV") -> receiveOp(SendReceiveOperation.Receive), //added by akamatsu
+      MType("DIV") -> rtypeOp(ALUOperation.Div),
+      MType("MUL") -> rtypeOp(ALUOperation.Mul),
+      MType("REM") -> rtypeOp(ALUOperation.Rem),
+      M64Type("DIVW") -> rtypeOp(ALUOperation.Div),
+      M64Type("MULW") -> rtypeOp(ALUOperation.Mul),
+      M64Type("REMW") -> rtypeOp(ALUOperation.Rem),
 //      I64Type("SLLI") -> itypeOp(ALUOperation.Sll),
 //      I64Type("SRLI") -> itypeOp(ALUOperation.Srl),
 //      I64Type("SRAI") -> itypeOp(ALUOperation.Sra),
@@ -1023,7 +1030,7 @@ object ALUOperation extends ChiselEnum {
   val BranchEqual, BranchNotEqual, BranchLessThan, BranchGreaterThanOrEqual,
     BranchLessThanUnsigned, BranchGreaterThanOrEqualUnsigned, Add, Sub, And, Or,
     Slt, Sltu, Xor, Sll, Srl, Sra, AddJALR, AddJAL, AddW, SllW, SrlW, SraW,
-    SubW, Snd, Rcv = Value
+    SubW, Div, Mul, Rem = Value
 }
 
 object LoadStoreOperation extends ChiselEnum {
