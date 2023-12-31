@@ -1,8 +1,15 @@
-SUBDIRS :=  Mtype_c \
+SUBDIRS :=  matmul_c \
+			matmul_send_2_c \
+			matmul_amo_2_c \
+#			matmul_send_4_c \
+			matmul_send_8_c \
+#			matmul_amo_4_c \
+			matmul_amo_8_c \
+#			sum_c \
 			send \
-			send_2_c \
-			sum_c \
-			sum_send_2_c \
+#			Mtype_c \
+   			send_2_c \
+#			sum_send_2_c \
 			sum_send_4_c \
 			sum_send_8_c \
 			sum_amo_2_c \

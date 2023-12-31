@@ -2,15 +2,15 @@
 int res[10];
 int r0=0, r1=0;
 
-void atomic_increment(int add_value) {
+void atomic_increment(int add_value, int dest) {
     int result;
-    int new_value = 0;
+    int new_value;
 
     do {
     // lr命令でロードと同時に条件付きロックを確立
         asm volatile("lr.w %0, (%1)"
                      : "=r" (result)   // 出力オペランド: 読み込んだ値
-                     : "r" (&res[0]));  // 入力オペランド: カウンタのアドレス
+                     : "r" (&dest));  // 入力オペランド: カウンタのアドレス
 
         // 条件付きロックが確立されたら、値をインクリメントしてストア
         new_value = result + add_value;
@@ -18,7 +18,7 @@ void atomic_increment(int add_value) {
         // sc命令で条件付きでストア
         asm volatile("sc.w %0, %1, (%2)"
                      : "=r" (result)   // 出力オペランド: 成功したかどうか (0: 成功, 1: 失敗)
-                     : "r" (new_value), "r" (&res[0]));  // 入力オペランド: 新しい値, カウンタのアドレス
+                     : "r" (new_value), "r" (&dest));  // 入力オペランド: 新しい値, カウンタのアドレス
     } while (result);  // 条件付きストアが失敗した場合は繰り返し
 }
 
@@ -27,7 +27,7 @@ long thread0(int data[]){
     int i,l,n;
     for(n=0; n<ROOP_NUM; n++){
         i = data[4*n] + data[4*n+1];
-        atomic_increment(i);
+        atomic_increment(i, res[0]);
     }
     return 1;
 }
@@ -36,7 +36,7 @@ long thread1(int data[]){
     int i,l,n;
     for(n=0; n<ROOP_NUM; n++){
         i = data[4*n+2] + data[4*n+3];
-        atomic_increment(i);
+        atomic_increment(i, res[0]);
     }
     return 1;
 }

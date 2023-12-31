@@ -85,8 +85,8 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
   // 命令をデコードするのはリオーダバッファにエントリの空きがあり、リザベーションステーションにも空きがあるとき
   io.instructionFetch.ready := io.reservationStation.ready && io.reorderBuffer.ready && io.loadStoreQueue.ready && io.csr.ready && io.amo.ready && io.sendReceiveQueue.ready
   // リオーダバッファやリザベーションステーションに新しいエントリを追加するのは命令がある時
-  io.reorderBuffer.valid := io.instructionFetch.ready &&
-    io.instructionFetch.valid
+  io.reorderBuffer.valid := io.instructionFetch.ready && io.instructionFetch.valid
+
 
   // RSへの出力を埋める
   val rs = io.reservationStation.entry

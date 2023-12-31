@@ -30,7 +30,7 @@ case class Parameters(
   threads: Int = 2,
   maxRegisterFileCommitCount: Int = 1,
   maxDataMemoryCommitCount: Int = 1,
-  fetchWidth: Int = 2,
+  fetchWidth: Int = 4,
   branchPredictionWidth: Int = 4,
   parallelOutput: Int = 2,
   instructionStart: Long = 0x8010_0000L,

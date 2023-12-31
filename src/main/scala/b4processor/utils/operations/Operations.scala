@@ -208,7 +208,8 @@ object Operations {
       _.sources(0).reg -> _(19, 15).reg,
       _.sources(1).reg -> _(24, 20).reg,
       _.sources(2).reg -> _(31, 27).reg,
-      _.rd -> _(11, 7).reg,
+      (u, _) => u.rd -> 0.reg,
+      //_.rd -> _(11, 7).reg,
     )
 
 

@@ -190,10 +190,6 @@ class ReorderBuffer(implicit params: Parameters) extends Module {
     }
   }
 
-
-
-
-
   private val tailDelta = MuxCase(
     params.maxRegisterFileCommitCount.U,
     io.registerFile.zipWithIndex.map { case (entry, index) =>
@@ -221,7 +217,11 @@ class ReorderBuffer(implicit params: Parameters) extends Module {
             Causes.illegal_instruction.U,
             0.U,
           )
-          entry.valueReady := false.B
+          when(decoder.operationSendReceive && decoder.destination.operationInorder){
+            entry.valueReady := true.B //send命令の場合無条件でコミット
+          }.otherwise{
+            entry.valueReady := false.B
+          }
           entry
         }
       }
