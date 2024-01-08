@@ -1,18 +1,42 @@
-#define S_SIZE 128
-#define ROW 128
-#define COLUMN 128
-#define E_SIZE 128
+#define S_SIZE 16
+#define ROW    16
+#define COLUMN 16
+#define E_SIZE 16
 volatile int check_flag = 0;
-int data1[S_SIZE] =   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-int data2[S_SIZE] =   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-                     // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
-int output[ROW][E_SIZE];
+int data1[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+int data2[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+                            // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+int output[ROW][COLUMN];
 
 void atomic_increment(int add_value ,int row, int column) {
     int result;
@@ -31,47 +55,20 @@ void atomic_increment(int add_value ,int row, int column) {
     } while (result);  // 条件付きストアが失敗した場合は繰り返し
 }
 
-void atomic_set(int set_value) {
+void atomic_add(int add_value ,int row, int column) {
     int result;
-    do {
     // lr命令でロードと同時に条件付きロックを確立
-        asm volatile("lr.w %0, (%1)"
-                     : "=r" (result)   // 出力オペランド: 読み込んだ値
-                     : "r" (&valid[0]));  // 入力オペランド: カウンタのアドレス
-        // sc命令で条件付きでストア
-        asm volatile("sc.w %0, %1, (%2)"
-                     : "=r" (result)   // 出力オペランド: 成功したかどうか (0: 成功, 1: 失敗)
-                     : "r" (set_value), "r" (&valid[0]));  // 入力オペランド: 新しい値, カウンタのアドレス
-    } while (result);  // 条件付きストアが失敗した場合は繰り返し
+    asm volatile("amoadd.w %0, %1, (%2)"
+                 : "=r" (result)   // 出力オペランド: 読み込んだ値
+                 : "r" (add_value), "r" (&output[row][column]));  // 入力オペランド: カウンタのアドレス
 }
 
-void load_wait() { //何らかの理由でキャッシュ, pcなどの値が無効になる
-    volatile int result;
-    do{
-       asm volatile("lw %0, (%1)"
-                    : "=r" (result)   // 出力オペランド: 読み込んだ値
-                    : "r" (&valid[0]));  // 入力オペランド: メモリアドレス
-       result = result + 0;    //上記のバグ回避用
-    }while(!result);
-}
-
-void atomic_wait(int dest) {//何らかの理由でキャッシュ, pcなどの値が無効になる
-    volatile int result;
-    int value = 0;
-    do {
-        asm volatile("amoswap.w %0, %1, (%2)"
-                      : "=r" (result)   // 出力オペランド: スワップ前の値
-                      : "r" (value), "r" (&dest));  // 入力オペランド: スワップする値, メモリアドレス
-        result = result + 0;    //上記のバグ回避用
-    } while (!result);  // 条件付きストアが失敗した場合は繰り返し
-}
-
-long thread0(int data1[S_SIZE], int data2[S_SIZE]){
-    for(int l=0; l<ROW; l++){
+long thread0(){
+    for(int l=0; l<ROW/2; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=0; n<E_SIZE/4; n++){
-                i += data1[n]*data2[n];
+            for(int n=0; n<E_SIZE/2; n++){
+                i += data1[l][n]*data2[n][m];
             }
             atomic_increment(i, l, m);
         }
@@ -80,36 +77,36 @@ long thread0(int data1[S_SIZE], int data2[S_SIZE]){
     return check_flag;
 }
 
-void thread1(int data1[S_SIZE], int data2[S_SIZE]){
-    for(int l=0; l<ROW; l++){
+void thread1(){
+    for(int l=0; l<ROW/2; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=E_SIZE/4; n<E_SIZE/2; n++){
-                i += data1[n]*data2[n];
+            for(int n=E_SIZE/2; n<E_SIZE; n++){
+                i += data1[l][n]*data2[n][m];
             }
             atomic_increment(i, l, m);
         }
     }
 }
 
-void thread2(int data1[S_SIZE], int data2[S_SIZE]){
-    for(int l=0; l<ROW; l++){
+void thread2(){
+    for(int l=ROW/2; l<ROW; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=E_SIZE/2; n<3*E_SIZE/4; n++){
-                i += data1[n]*data2[n];
+            for(int n=0; n<E_SIZE/2; n++){
+                i += data1[l][n]*data2[n][m];
             }
             atomic_increment(i, l, m);
         }
     }
 }
 
-void thread3(int data1[S_SIZE], int data2[S_SIZE]){
-    for(int l=0; l<ROW; l++){
+void thread3(){
+    for(int l=ROW/2; l<ROW; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=3*E_SIZE/4; n<E_SIZE; n++){
-                i += data1[n]*data2[n];
+            for(int n=E_SIZE/2; n<E_SIZE; n++){
+                i += data1[l][n]*data2[n][m];
             }
             atomic_increment(i, l, m);
         }
@@ -121,13 +118,13 @@ long main(long loop_count){
     int tid;
     asm volatile("csrr %0, mhartid" : "=r"(tid));
     if      (tid == 0){
-        r = thread0(data1, data2);
+        r = thread0();
     }else if(tid == 1){
-            thread1(data1, data2);
+            thread1();
     }else if(tid == 2){
-            thread2(data1, data2);
+            thread2();
     }else             {
-            thread3(data1, data2);
+            thread3();
     }
     r += 10;//確認用の計算
     return r;

@@ -43,8 +43,8 @@ class SendReceiveQueue(implicit params: Parameters)
   val sendTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val receiveHead = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val receiveTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
-  val outputHead = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
-  val outputTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
+  val outputHead = RegInit(0.U(params.sendReceiveOutputQueueIndexWidth.W))
+  val outputTail = RegInit(0.U(params.sendReceiveOutputQueueIndexWidth.W))
     
   io.empty := sendHead === sendTail || receiveHead === receiveTail
   io.full := (sendHead + 1.U === sendTail) || (receiveHead + 1.U === receiveTail)
@@ -66,7 +66,7 @@ class SendReceiveQueue(implicit params: Parameters)
   )
   val outbuffer = RegInit(
     VecInit(
-      Seq.fill(math.pow(2, params.sendReceiveQueueIndexWidth).toInt)(outputDefaultEntry),
+      Seq.fill(math.pow(2, params.sendReceiveOutputQueueIndexWidth).toInt)(outputDefaultEntry),
     ),
   )
 
@@ -129,11 +129,7 @@ class SendReceiveQueue(implicit params: Parameters)
             buf.channel := o.bits.value
             buf.channelValid := true.B
           }
-          when(
-            buf.destinationTag.id === o.bits.tag.id &&
-            buf.sendDataTag.threadId === o.bits.tag.threadId &&
-            !buf.destinationTagValid
-            ) {
+          when(buf.destinationTag.id === o.bits.tag.id && buf.sendDataTag.threadId === o.bits.tag.threadId && !buf.destinationTagValid) {
             buf.destinationTag.threadId := o.bits.value
             buf.destinationTagValid := true.B
           }
@@ -143,11 +139,7 @@ class SendReceiveQueue(implicit params: Parameters)
             buf.channel := o.bits.value
             buf.channelValid := true.B
           }
-          when(
-            buf.sendDataTag.id === o.bits.tag.id &&
-            buf.destinationTag.threadId === o.bits.tag.threadId &&
-            !buf.sendDataTagValid
-          ) {
+          when(buf.sendDataTag.id === o.bits.tag.id && buf.destinationTag.threadId === o.bits.tag.threadId && !buf.sendDataTagValid) {
             buf.sendDataTag.threadId := o.bits.value
             buf.sendDataTagValid := true.B
           }
@@ -194,6 +186,7 @@ class SendReceiveQueue(implicit params: Parameters)
   }
 
   var outputInsertIndex = outputHead
+  //var sendTailInsertIndex = sendTail
   for (i <- 0 until math.pow(2, params.sendReceiveQueueIndexWidth).toInt) {
     val sendBuf = sendbuffer(i)
     val outBufReady = outputTail =/= outputInsertIndex + 1.U
@@ -205,16 +198,19 @@ class SendReceiveQueue(implicit params: Parameters)
       sendBuf.valueOutputed := true.B
     }
     when(sendBuf.valueOutputed){
-      sendBuf.valueOutputed := false.B
+      //sendBuf.valueOutputed := false.B
       sendBuf.opIsDone := false.B
     }
     outputInsertIndex = outputInsertIndex + (sendBuf.opIsDone && !sendBuf.valueOutputed && outBufReady).asUInt
+    //sendTailInsertIndex = sendTailInsertIndex + (sendBuf.valueOutputed).asUInt
   }
   outputHead := outputInsertIndex
+  //sendTail := sendTailInsertIndex
 
-  when(sendbuffer(sendTail).opIsDone && sendHead =/= sendTail) {
+  when(sendbuffer(sendTail).valueOutputed && sendHead =/= sendTail) {
     sendTail := sendTail + 1.U
   }
+
   when(receivebuffer(receiveTail).opIsDone && receiveHead =/= receiveTail) {
     receiveTail := receiveTail + 1.U
   }
@@ -224,6 +220,11 @@ class SendReceiveQueue(implicit params: Parameters)
     io.recevedData.bits.tag := outbuffer(outputTail).destinationTag
     io.recevedData.bits.isError := false.B
     outputTail := outputTail + 1.U
+  }.otherwise{
+    io.recevedData.valid := false.B
+    io.recevedData.bits.value := 0.U
+    io.recevedData.bits.tag := Tag(0.U, 0.U)
+    io.recevedData.bits.isError := false.B
   }
 }
 

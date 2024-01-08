@@ -40,14 +40,14 @@ int output[ROW][COLUMN];
 
 void send(long rs1, long rs2, long rs3){
     int zero=0;
-    asm volatile(".insn  r4 0b0110011, 0b100, 0b11, %0, %1, %2, %3"
+    asm volatile(".insn  r4 0b1011011, 0b100, 0b11, %0, %1, %2, %3"
                  : "=r" (zero)
                  : "r"(rs1), "r"(rs2), "r"(rs3));
                  //rd:意味なし、rs1:送信先のスレッドID、rs2:送信する値、rs3:channel
 }
 
 long receive(long rd, long rs1, long rs2) {
-    asm volatile(".insn r 0b0110011, 0b100, 0b0000110, %0, %1, %2"
+    asm volatile(".insn r 0b1011011, 0b100, 0b0000110, %0, %1, %2"
                  : "=r" (rd)
                  : "r" (rs1), "r"(rs2));
                  //rd:送信された値、rs1:送信元のスレッドID、rs2:channel

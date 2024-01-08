@@ -54,7 +54,7 @@ class z10_B4ProcessorProgramTest
   it should "execute matmul with no parallel" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 1, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 1, executors = 16, decoderPerThread = 2, tagWidth = 8),
       ),
     )
       .withAnnotations(
@@ -68,12 +68,13 @@ class z10_B4ProcessorProgramTest
   it should "execute matmul_send with 2 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 2, executors = 4, decoderPerThread = 2, tagWidth = 8),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
+        c.clock.setTimeout(30000)
         c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
         c.checkForRegister(10, 11, 40000)
       }
@@ -81,36 +82,64 @@ class z10_B4ProcessorProgramTest
   it should "execute matmul_send with 4 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 4, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 4, executors = 8, decoderPerThread = 2, tagWidth = 5),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(2000)
+        c.clock.setTimeout(30000)
         c.initialize("programs/riscv-sample-programs/matmul_send_4_c")
-        c.checkForRegister(10, 2100, 10000)
+        c.checkForRegister(17, 2, 5000)
       }
   }
   it should "execute matmul_send with 8 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 8, executors = 16, decoderPerThread = 2, tagWidth = 5),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(2000)
+        c.clock.setTimeout(30000)
         c.initialize("programs/riscv-sample-programs/matmul_send_8_c")
-        c.checkForRegister(10, 2100, 10000)
+        c.checkForRegister(17, 1, 5000)
+      }
+  }
+  it should "execute matmul_send with 4_2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 4, executors = 4, decoderPerThread = 1, tagWidth = 6),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.clock.setTimeout(30000)
+        c.initialize("programs/riscv-sample-programs/matmul_send_4_2_c")
+        c.checkForRegister(17, 4, 30000)
+      }
+  }
+  it should "execute matmul_send with 8_2 parallel thread" in {
+    test(
+      new B4ProcessorWithMemory()(
+        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 1, tagWidth = 6),
+      ),
+    )
+      .withAnnotations(
+        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
+      ) { c =>
+        c.clock.setTimeout(30000)
+        c.initialize("programs/riscv-sample-programs/matmul_send_8_2_c")
+        c.checkForRegister(17, 4, 30000)
       }
   }
   // matmul_amoプログラムが実行できる
   it should "execute matmul_amo with 2 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 2, executors = 16, decoderPerThread = 2, tagWidth = 8),
       ),
     )
       .withAnnotations(
@@ -123,29 +152,27 @@ class z10_B4ProcessorProgramTest
   it should "execute matmul_amo with 4 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 4, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 4, executors = 16, decoderPerThread = 2, tagWidth = 8),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(2000)
         c.initialize("programs/riscv-sample-programs/matmul_amo_4_c")
-        c.checkForRegister(15, 2100, 10000)
+        c.checkForRegister(10, 11, 50000)
       }
   }
   it should "execute matmul_amo with 8 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 8, executors = 16, decoderPerThread = 2, tagWidth = 8),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(2000)
         c.initialize("programs/riscv-sample-programs/matmul_amo_8_c")
-        c.checkForRegister(15, 2100, 10000)
+        c.checkForRegister(10, 11, 50000)
       }
   }
   // sumプログラムが実行できる

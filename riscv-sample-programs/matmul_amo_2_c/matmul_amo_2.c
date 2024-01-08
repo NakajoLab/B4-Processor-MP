@@ -94,9 +94,9 @@ long main(long loop_count){
     int tid;
     asm volatile("csrr %0, mhartid" : "=r"(tid));
     if(tid == 0){
-        r = thread0(data1, data2);
+        r = thread0();
     }else{
-        thread1(data1, data2);
+        thread1();
     }
     r += 10;
     return r;

@@ -131,7 +131,7 @@ int data2[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                              { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                              { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                              { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
-                            // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 
+                            // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 int output[ROW][COLUMN];
 
 void send(long rs1, long rs2, long rs3){
@@ -153,10 +153,10 @@ long receive(long rd, long rs1, long rs2) {
 long thread0(){
     int t=1;
     int c=0;
-    for(int l=0; l<ROW/2; l++){
+    for(int l=0; l<ROW; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=0; n<E_SIZE/2; n++){
+            for(int n=0; n<E_SIZE/4; n++){
                 i += data1[l][n]*data2[n][m];
             }
             int j = receive(j, t, c);
@@ -164,118 +164,51 @@ long thread0(){
             c += 1;
         }
     }
-    check_flag += receive(check_flag, 2, c);
-    check_flag += receive(check_flag, 4, c);
-    check_flag += receive(check_flag, 6, c);
     return check_flag;
 }
 
 void thread1(){
-    int t=0;
+    int t0=2, t1=0;
     int c=0;
-    for(int l=0; l<ROW/2; l++){
-        for(int m=0; m<COLUMN/2; m++){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=E_SIZE/2; n<E_SIZE; n++){
+            for(int n=E_SIZE/4; n<2*E_SIZE/4; n++){
                 i += data1[l][n]*data2[n][m];
             }
-            send(t, i, c);
+            int j = receive(j, t0, c);
+            send(t1, i+j, c);
             c += 1;
         }
     }
 }
 
 void thread2(){
-    int t=3;
+    int t0=3, t1=1;
     int c=0;
-    for(int l=ROW/2; l<ROW; l++){
-        for(int m=0; m<COLUMN/2; m++){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=0; n<E_SIZE/2; n++){
+            for(int n=2*E_SIZE/4; n<3*E_SIZE/4; n++){
                 i += data1[l][n]*data2[n][m];
             }
-            int j = receive(j, t, c);
-            output[l][m] = i + j;
+            int j = receive(j, t0, c);
+            send(t1, i+j, c);
             c += 1;
         }
     }
-    send(0, 1, c);
 }
 
 void thread3(){
-    int t=2;
+    int t0=4, t1=2;
     int c=0;
-    for(int l=ROW/2; l<ROW; l++){
-        for(int m=0; m<COLUMN/2; m++){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=E_SIZE/2; n<E_SIZE; n++){
+            for(int n=3*E_SIZE/4; n<4*E_SIZE/4; n++){
                 i += data1[l][n]*data2[n][m];
             }
-            send(t, i, c);
-            c += 1;
-        }
-    }
-}
-
-void thread4(){
-    int t=5;
-    int c=0;
-    for(int l=0; l<ROW/2; l++){
-        for(int m=COLUMN/2; m<COLUMN; m++){
-            int i = 0;
-            for(int n=0; n<E_SIZE/2; n++){
-                i += data1[l][n]*data2[n][m];
-            }
-            int j = receive(j, t, c);
-            output[l][m] = i + j;
-            c += 1;
-        }
-    }
-    send(0, 1, c);
-}
-
-void thread5(){
-    int t=4;
-    int c=0;
-    for(int l=0; l<ROW/2; l++){
-        for(int m=COLUMN/2; m<COLUMN; m++){
-            int i = 0;
-            for(int n=E_SIZE/2; n<E_SIZE; n++){
-                i += data1[l][n]*data2[n][m];
-            }
-            send(t, i, c);
-            c += 1;
-        }
-    }
-}
-
-void thread6(){
-    int t=7;
-    int c=0;
-    for(int l=ROW/2; l<ROW; l++){
-        for(int m=COLUMN/2; m<COLUMN; m++){
-            int i = 0;
-            for(int n=0; n<E_SIZE/2; n++){
-                i += data1[l][n]*data2[n][m];
-            }
-            int j = receive(j, t, c);
-            output[l][m] = i + j;
-            c += 1;
-        }
-    }
-    send(0, 1, c);
-}
-
-void thread7(){
-    int t=6;
-    int c=0;
-    for(int l=ROW/2; l<ROW; l++){
-        for(int m=COLUMN/2; m<COLUMN; m++){
-            int i = 0;
-            for(int n=E_SIZE/2; n<E_SIZE; n++){
-                i += data1[l][n]*data2[n][m];
-            }
-            send(t, i, c);
+            send(t1, i, c);
             c += 1;
         }
     }
@@ -291,16 +224,8 @@ long main(long loop_count){
             thread1();
     }else if(tid == 2){
             thread2();
-    }else if(tid == 3){
-            thread3();
-    }else if(tid == 4){
-            thread4();
-    }else if(tid == 5){
-            thread5();
-    }else if(tid == 6){
-            thread6();
     }else             {
-            thread7();
+            thread3();
     }
     r += 10;//確認用の計算
     return r;

@@ -38,6 +38,6 @@ case class Parameters(
   enablePExt: Boolean = false,
   pextExecutors: Int = 1,
   sendReceiveQueueIndexWidth: Int = 5,
-  sendReceiveQueueCheckLength: Int = 5,
+  sendReceiveOutputQueueIndexWidth: Int = 2,
   enableSR: Boolean = true,
 )
