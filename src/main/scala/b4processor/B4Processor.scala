@@ -27,6 +27,7 @@ import b4processor.modules.reservationstation.{
   ReservationStation2,
 }
 import b4processor.modules.SendReceiveQueue.SendReceiveQueue //added by akamatsu
+import b4processor.modules.delayMod.{dataReadDelayReg, dataReadWriteDelayReg, fetchDelayReg} //added by akamatsu
 import b4processor.utils.axi.{ChiselAXI, VerilogAXI}
 import chisel3._
 import chisel3.experimental.dataview.DataViewable
@@ -51,12 +52,23 @@ class B4Processor(implicit params: Parameters) extends Module {
     Seq.fill(params.threads)(Module(new InstructionMemoryCache))
   private val fetch = Seq.fill(params.threads)(Module(new Fetch))
   private val fetchBuffer = Seq.fill(params.threads)(Module(new FetchBuffer))
+
+  /**
+  private val fetchDelayRegs = Seq.fill(params.threads)(
+    Seq.fill(params.decoderPerThread)(Module(new fetchDelayReg)), //added by akamatsu
+  )
+  **/
+
   private val reorderBuffer =
     Seq.fill(params.threads)(Module(new ReorderBuffer))
   private val registerFile =
     Seq.fill(params.threads)(Module(new RegisterFileMem))
   private val loadStoreQueue =
     Seq.fill(params.threads)(Module(new LoadStoreQueue))
+
+  private val dataReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
+  private val amoReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
+
   private val sendReceiveQueue = Module(new SendReceiveQueue) //added by akamatsu
   private val dataMemoryBuffer = Module(new DataMemoryBuffer)
 
@@ -191,7 +203,10 @@ class B4Processor(implicit params: Parameters) extends Module {
 
       decoders(tid)(d).io.threadId := tid.U
 
-      uncompresser(tid)(d).io.fetch <> fetchBuffer(tid).io.output(d)
+      uncompresser(tid)(d).io.fetch <> fetchBuffer(tid).io.output(d) //通常の接続
+      //fetchBuffer(tid).io.output(d) <> fetchDelayRegs(tid)(d).io.input //フェッチに遅延を追加する接続
+      //fetchDelayRegs(tid)(d).io.output <> uncompresser(tid)(d).io.fetch //フェッチに遅延を追加する接続
+
 
       /** デコーダとフェッチバッファ */
       decoders(tid)(d).io.instructionFetch <> uncompresser(tid)(d).io.decoder
@@ -264,15 +279,21 @@ class B4Processor(implicit params: Parameters) extends Module {
   }
 
   /** メモリとデータメモリバッファ */
-  externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory
-  dataMemoryBuffer.io.output <> outputCollector.io.dataMemory
-  externalMemoryInterface.io.amo <> amo.io.memory
+  //externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory //通常の接続
+  dataReadWriteDelayRegs.cpuSide <> dataMemoryBuffer.io.memory
+  externalMemoryInterface.io.data <> dataReadWriteDelayRegs.memSide
 
+  dataMemoryBuffer.io.output <> outputCollector.io.dataMemory
+
+  //externalMemoryInterface.io.amo <> amo.io.memory //通常の接続
+  amoReadWriteDelayRegs.cpuSide <> amo.io.memory
+  externalMemoryInterface.io.amo <> amoReadWriteDelayRegs.memSide
 }
 
 class B4ProcessorFixedPorts(implicit params: Parameters) extends RawModule {
   override val desiredName = "B4Processor"
   val AXI_MM = IO(new VerilogAXI(64, 64))
+
   val axi = AXI_MM.viewAs[ChiselAXI]
 
   val aclk = IO(Input(Bool()))

@@ -1,0 +1,415 @@
+2024.02.01 02:27:33 INFO  Started: Metals version 1.2.0 in folders '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP' for client Visual Studio Code 1.85.2.
+2024.02.01 02:27:34 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals.h2.db
+2024.02.01 02:27:34 ERROR org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.01 02:27:34 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals.h2.db
+2024.02.01 02:27:34 ERROR unable to setup persistent H2 database with AUTO_SERVER=false, falling back to in-memory database. This means you may be redundantly asked to execute 'Import build', even if it's not needed. Also, code navigation will not work for existing files in the .metals/readonly/ directory. To fix this problem, make sure you only have one running Metals server in the directory '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP'.
+org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.01 02:27:34 WARN  Build server is not auto-connectable.
+2024.02.01 03:27:14 INFO  Shutting down server
+2024.02.01 03:27:14 INFO  shutting down Metals
+2024.02.01 03:27:14 INFO  Exiting server
+2024.02.01 03:27:14 ERROR Unexpected error initializing server: 
+org.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.02 19:25:12 INFO  Started: Metals version 1.2.0 in folders '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP' for client Visual Studio Code 1.85.2.
+2024.02.02 19:25:13 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals.h2.db
+2024.02.02 19:25:13 ERROR org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.02 19:25:13 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals.h2.db
+2024.02.02 19:25:13 ERROR unable to setup persistent H2 database with AUTO_SERVER=false, falling back to in-memory database. This means you may be redundantly asked to execute 'Import build', even if it's not needed. Also, code navigation will not work for existing files in the .metals/readonly/ directory. To fix this problem, make sure you only have one running Metals server in the directory '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP'.
+org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:39)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.loadFingerPrints(MetalsLspService.scala:874)
+	at scala.meta.internal.metals.MetalsLspService.initialized(MetalsLspService.scala:911)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$2(WorkspaceLspService.scala:1144)
+	at scala.collection.immutable.List.map(List.scala:246)
+	at scala.meta.internal.metals.WorkspaceLspService.$anonfun$initialized$1(WorkspaceLspService.scala:1144)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:470)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.02 19:25:13 WARN  Build server is not auto-connectable.
+2024.02.02 19:25:16 INFO  Shutting down server
+2024.02.02 19:25:16 INFO  shutting down Metals
+2024.02.02 19:25:16 INFO  Exiting server
+2024.02.02 19:25:16 ERROR Unexpected error initializing server: 
+org.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.05.27 21:49:01 INFO  Started: Metals version 1.3.1 in folders '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP' for client Visual Studio Code 1.87.0.
+2024.05.27 21:49:01 ERROR org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:568)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:275)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:343)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:125)
+	at org.h2.Driver.connect(Driver.java:59)
+	at java.sql.DriverManager.getConnection(DriverManager.java:681)
+	at java.sql.DriverManager.getConnection(DriverManager.java:229)
+	at scala.meta.internal.metals.Tables.upgradeIfNeeded(Tables.scala:181)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:148)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:91)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:55)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:44)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$loadFingerPrints$1(MetalsLspService.scala:889)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(Thread.java:833)
+
+2024.05.27 21:49:01 ERROR unable to setup persistent H2 database with AUTO_SERVER=false, falling back to in-memory database. This means you may be redundantly asked to execute 'Import build', even if it's not needed. Also, code navigation will not work for existing files in the .metals/readonly/ directory. To fix this problem, make sure you only have one running Metals server in the directory '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP'.
+org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:568)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:275)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:343)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:125)
+	at org.h2.Driver.connect(Driver.java:59)
+	at java.sql.DriverManager.getConnection(DriverManager.java:681)
+	at java.sql.DriverManager.getConnection(DriverManager.java:229)
+	at scala.meta.internal.metals.Tables.upgradeIfNeeded(Tables.scala:181)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:148)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:108)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:102)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:55)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.$anonfun$fingerprints$1(Tables.scala:44)
+	at scala.meta.internal.metals.Fingerprints.load(Fingerprints.scala:52)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$loadFingerPrints$1(MetalsLspService.scala:889)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(Thread.java:833)
+
+SLF4J(W): Class path contains multiple SLF4J providers.
+SLF4J(W): Found provider [scribe.slf4j.ScribeServiceProvider@270c89ed]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@104e2d04]
+SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J(I): Actual provider is of type [scribe.slf4j.ScribeServiceProvider@270c89ed]
+2024.05.27 21:49:01 WARN  Flyway upgrade recommended: H2 2.2.224 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.
+2024.05.27 21:49:08 INFO  running 'C:\Users\mastu\AppData\Local\Coursier\cache\arc\https\github.com\adoptium\temurin17-binaries\releases\download\jdk-17%252B35\OpenJDK17-jdk_x64_windows_hotspot_17_35.zip\jdk-17+35\bin\java.exe -Djline.terminal=jline.UnsupportedTerminal -Dsbt.log.noformat=true -Dfile.encoding=UTF-8 -jar C:\Users\mastu\AppData\Local\Temp\metals8002036887762249181\sbt-launch.jar -Dbloop.export-jar-classifiers=sources bloopInstall'
+2024.05.27 21:49:08 ERROR java.io.FileNotFoundException: C:\Users\mastu\.sbt\boot\sbt.boot.lock (繧｢繧ｯ繧ｻ繧ｹ縺梧拠蜷ｦ縺輔ｌ縺ｾ縺励◆縲?)
+2024.05.27 21:49:08 ERROR 	at java.base/java.io.FileOutputStream.open0(Native Method)
+2024.05.27 21:49:08 ERROR 	at java.base/java.io.FileOutputStream.open(FileOutputStream.java:293)
+2024.05.27 21:49:08 ERROR 	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:235)
+2024.05.27 21:49:08 ERROR 	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:184)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Locks$GlobalLock.withFileLock(Locks.scala:119)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Locks$GlobalLock.ignoringDeadlockAvoided(Locks.scala:71)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Locks$GlobalLock.withLock(Locks.scala:59)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Locks$.apply0(Locks.scala:47)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Locks$.apply(Locks.scala:36)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch.locked(Launch.scala:393)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch.getAppProvider(Launch.scala:304)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch.app(Launch.scala:216)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch.app(Launch.scala:214)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch$.run(Launch.scala:140)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch$.$anonfun$apply$1(Launch.scala:44)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch$.launch(Launch.scala:159)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch$.apply(Launch.scala:44)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Launch$.apply(Launch.scala:21)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Boot$.runImpl(Boot.scala:78)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Boot$.run(Boot.scala:73)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Boot$.main(Boot.scala:21)
+2024.05.27 21:49:08 ERROR 	at xsbt.boot.Boot.main(Boot.scala)
+2024.05.27 21:49:08 ERROR [error] [launcher] error during sbt launcher: java.io.FileNotFoundException: C:\Users\mastu\.sbt\boot\sbt.boot.lock (繧｢繧ｯ繧ｻ繧ｹ縺梧拠蜷ｦ縺輔ｌ縺ｾ縺励◆縲?)
+2024.05.27 21:49:08 INFO  time: ran 'sbt bloopInstall' in 0.27s
+2024.05.27 21:49:08 ERROR sbt command failed: C:\Users\mastu\AppData\Local\Coursier\cache\arc\https\github.com\adoptium\temurin17-binaries\releases\download\jdk-17%252B35\OpenJDK17-jdk_x64_windows_hotspot_17_35.zip\jdk-17+35\bin\java.exe -Djline.terminal=jline.UnsupportedTerminal -Dsbt.log.noformat=true -Dfile.encoding=UTF-8 -jar C:\Users\mastu\AppData\Local\Temp\metals8002036887762249181\sbt-launch.jar -Dbloop.export-jar-classifiers=sources bloopInstall
+2024.05.27 21:50:25 INFO  Shutting down server
+2024.05.27 21:50:25 INFO  shutting down Metals
+2024.05.27 21:50:25 INFO  Exiting server

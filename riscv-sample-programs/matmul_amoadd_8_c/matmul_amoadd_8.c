@@ -1,7 +1,7 @@
-#define S_SIZE 8
-#define ROW    8
-#define COLUMN 8
-#define E_SIZE 8
+#define S_SIZE 64
+#define ROW    64
+#define COLUMN 64
+#define E_SIZE 64
 volatile int check_flag = 0;
 int data1[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                              { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -134,29 +134,135 @@ int data2[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                             // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 int output[ROW][COLUMN];
 
+
+void atomic_add(int add_value ,int row, int column) {
+    int result;
+    // lr命令でロードと同時に条件付きロックを確立
+    asm volatile("amoadd.w %0, %1, (%2)"
+                 : "=r" (result)   // 出力オペランド: 読み込んだ値
+                 : "r" (add_value), "r" (&output[row][column]));  // 入力オペランド: カウンタのアドレス
+}
+
 long thread0(){
     volatile int c=0;
     for(int l=0; l<ROW; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=0; n<E_SIZE; n++){
+            for(int n=0; n<E_SIZE/8; n++){
                 i += data1[l][n]*data2[n][m];
             }
-            output[l][m] = i;
+            atomic_add(i, l, m);
             c += 1;
         }
     }
-    check_flag = 1;
     return check_flag;
+}
+
+void thread1(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=E_SIZE/8; n<2*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread2(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=2*E_SIZE/8; n<3*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread3(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=3*E_SIZE/8; n<4*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread4(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=4*E_SIZE/8; n<5*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread5(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=5*E_SIZE/8; n<6*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread6(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=6*E_SIZE/8; n<7*E_SIZE/8; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread7(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=7*E_SIZE/8; n<E_SIZE; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
 }
 
 long main(long loop_count){
     long r;
     int tid;
     asm volatile("csrr %0, mhartid" : "=r"(tid));
-    if(tid == 0){
+    if      (tid == 0){
         r = thread0();
+    }else if(tid == 1){
+            thread1();
+    }else if(tid == 2){
+            thread2();
+    }else if(tid == 3){
+            thread3();
+    }else if(tid == 4){
+            thread4();
+    }else if(tid == 5){
+            thread5();
+    }else if(tid == 6){
+            thread6();
+    }else             {
+            thread7();
     }
-    r += 10;
+    r += 10;//確認用の計算
     return r;
 }

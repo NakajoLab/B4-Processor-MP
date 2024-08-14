@@ -1,7 +1,7 @@
-#define S_SIZE 8
-#define ROW    8
-#define COLUMN 8
-#define E_SIZE 8
+#define S_SIZE 64
+#define ROW    64
+#define COLUMN 64
+#define E_SIZE 64
 volatile int check_flag = 0;
 int data1[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                              { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -134,29 +134,79 @@ int data2[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                             // 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 int output[ROW][COLUMN];
 
+
+void atomic_add(int add_value ,int row, int column) {
+    int result;
+    // lr命令でロードと同時に条件付きロックを確立
+    asm volatile("amoadd.w %0, %1, (%2)"
+                 : "=r" (result)   // 出力オペランド: 読み込んだ値
+                 : "r" (add_value), "r" (&output[row][column]));  // 入力オペランド: カウンタのアドレス
+}
+
 long thread0(){
     volatile int c=0;
     for(int l=0; l<ROW; l++){
         for(int m=0; m<COLUMN; m++){
             int i = 0;
-            for(int n=0; n<E_SIZE; n++){
+            for(int n=0; n<E_SIZE/4; n++){
                 i += data1[l][n]*data2[n][m];
             }
-            output[l][m] = i;
+            atomic_add(i, l, m);
             c += 1;
         }
     }
-    check_flag = 1;
     return check_flag;
+}
+
+void thread1(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=E_SIZE/4; n<E_SIZE/2; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread2(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=E_SIZE/2; n<3*E_SIZE/4; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
+}
+
+void thread3(){
+    for(int l=0; l<ROW; l++){
+        for(int m=0; m<COLUMN; m++){
+            int i = 0;
+            for(int n=3*E_SIZE/4; n<E_SIZE; n++){
+                i += data1[l][n]*data2[n][m];
+            }
+            atomic_add(i, l, m);
+        }
+    }
 }
 
 long main(long loop_count){
     long r;
     int tid;
     asm volatile("csrr %0, mhartid" : "=r"(tid));
-    if(tid == 0){
+    if      (tid == 0){
         r = thread0();
+    }else if(tid == 1){
+            thread1();
+    }else if(tid == 2){
+            thread2();
+    }else             {
+            thread3();
     }
-    r += 10;
+    r += 10;//確認用の計算
     return r;
 }

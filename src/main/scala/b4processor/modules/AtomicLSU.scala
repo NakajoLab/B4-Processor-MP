@@ -25,6 +25,8 @@ import b4processor.utils.operations.{
 
 import scala.math.pow
 
+
+
 class Decoder2AtomicLSU(implicit params: Parameters) extends Bundle {
   val valid = Bool()
   val operation = AMOOperation.Type()
@@ -62,6 +64,8 @@ class AtomicLSU(implicit params: Parameters) extends Module {
         ),
       ),
     )
+
+    val countOuntput = Output(UInt(32.W))
   })
 
   io.output.valid := false.B
@@ -87,6 +91,9 @@ class AtomicLSU(implicit params: Parameters) extends Module {
   )
 
   private val reservation = Reg(Vec(params.threads, Valid(UInt(64.W))))
+
+  val scInvalidCountReg = RegInit(0.U(32.W))
+  io.countOuntput := scInvalidCountReg
 
   for (t <- 0 until params.threads) {
     val buf = buffer(t)
@@ -237,6 +244,8 @@ class AtomicLSU(implicit params: Parameters) extends Module {
       response := 1.U
       state := write_back
       res.valid := false.B
+      scInvalidCountReg := scInvalidCountReg + 1.U
+      printf(p"scInvalidCount = ${scInvalidCountReg}\n")
     }.otherwise {
       when(issueQueue.output.bits.operation === AMOOperation.Sc) {
         response := 0.U
@@ -316,9 +325,9 @@ class AtomicLSU(implicit params: Parameters) extends Module {
       when(next) {
         state := write_wait_response
       }
-
     }
   }
+
 
   when(state === write_wait_response) {
     io.memory.write.response.ready := true.B

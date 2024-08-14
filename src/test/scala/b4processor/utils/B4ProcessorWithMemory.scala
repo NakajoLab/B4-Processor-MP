@@ -5,6 +5,11 @@ import chisel3._
 import chiseltest._
 import chisel3.util._
 import _root_.circt.stage.ChiselStage
+import b4processor.modules.AXIDelayReg
+import b4processor.modules.AXIDelayReg.AXIDelayReg
+import b4processor.utils.axi.ChiselAXI
+
+import scala.collection.mutable.Queue
 
 class B4ProcessorWithMemory()(implicit params: Parameters) extends Module {
   val io = IO(new Bundle {
@@ -25,7 +30,14 @@ class B4ProcessorWithMemory()(implicit params: Parameters) extends Module {
   })
   val core = Module(new B4Processor)
   val axiMemory = Module(new SimpleAXIMemoryWithSimulationIO(1024*1024*512))
-  core.axi <> axiMemory.axi
+
+  //通信遅延の記述開始
+  //val axiDelayRegs = Module(new AXIDelayReg(5))
+  //core.axi <> axiDelayRegs.cpuSideAXI
+  //axiDelayRegs.memSideAXI <> axiMemory.axi
+  //通信遅延の記述終了
+
+  core.axi <> axiMemory.axi //遅延を入れるときはコメントアウト
   io.simulation <> axiMemory.simulationSource.input
 
   axiMemory.simulationIO <> io.simulationIO

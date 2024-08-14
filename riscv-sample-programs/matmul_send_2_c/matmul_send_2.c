@@ -39,7 +39,7 @@ int data2[S_SIZE][S_SIZE] = {{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 int output[ROW][COLUMN];
 
 void send(long rs1, long rs2, long rs3){
-    int zero=0;
+    int zero;
     asm volatile(".insn  r4 0b1011011, 0b100, 0b11, %0, %1, %2, %3"
                  : "=r" (zero)
                  : "r"(rs1), "r"(rs2), "r"(rs3));

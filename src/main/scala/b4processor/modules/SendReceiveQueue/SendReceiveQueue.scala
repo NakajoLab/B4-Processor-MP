@@ -31,8 +31,6 @@ class SendReceiveQueue(implicit params: Parameters)
 
     val empty = Output(Bool())
     val full = Output(Bool())
-
-    // LSQのエントリ数はこのままでいいのか
   })
 
   val sendDefaultEntry = SendQueueEntry.default
@@ -45,9 +43,10 @@ class SendReceiveQueue(implicit params: Parameters)
   val receiveTail = RegInit(0.U(params.sendReceiveQueueIndexWidth.W))
   val outputHead = RegInit(0.U(params.sendReceiveOutputQueueIndexWidth.W))
   val outputTail = RegInit(0.U(params.sendReceiveOutputQueueIndexWidth.W))
-    
-  io.empty := sendHead === sendTail || receiveHead === receiveTail
-  io.full := (sendHead + 1.U === sendTail) || (receiveHead + 1.U === receiveTail)
+
+    io.empty := sendHead === sendTail || receiveHead === receiveTail
+    io.full := (sendHead + 1.U === sendTail) || (receiveHead + 1.U === receiveTail)
+
 
   // 出力の初期化
   io.recevedData.valid := false.B
@@ -69,6 +68,7 @@ class SendReceiveQueue(implicit params: Parameters)
       Seq.fill(math.pow(2, params.sendReceiveOutputQueueIndexWidth).toInt)(outputDefaultEntry),
     ),
   )
+
 
   var sendInsertIndex = sendHead
   var receiveInsertIndex = receiveHead

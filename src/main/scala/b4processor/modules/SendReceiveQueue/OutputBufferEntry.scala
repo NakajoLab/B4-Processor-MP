@@ -15,7 +15,7 @@ class OutputBufferEntry(implicit params: Parameters) extends Bundle {
   /** エントリが有効である */
   val valid = Bool()
 
-  val value = UInt(2.W) //本来は64bit, シミュレーション高速化のため小さい値にしている
+  val value = UInt(64.W) //本来は64bit, シミュレーション高速化のため小さい値にしている
   val destinationTag = new Tag
 
 }

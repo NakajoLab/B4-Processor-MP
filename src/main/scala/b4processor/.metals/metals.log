@@ -1,0 +1,205 @@
+2024.02.03 05:27:01 INFO  Started: Metals version 1.2.0 in folders '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor' for client Visual Studio Code 1.86.0.
+2024.02.03 05:27:01 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\.metals\metals.h2.db
+2024.02.03 05:27:01 ERROR org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$dependencySources$1(Tables.scala:29)
+	at scala.meta.internal.metals.DependencySources.getBuildTarget(DependencySources.scala:25)
+	at scala.meta.internal.metals.BuildTargets.$anonfun$inverseSources$2(BuildTargets.scala:236)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.BuildTargets.inverseSources(BuildTargets.scala:236)
+	at scala.meta.internal.metals.ScalaVersionSelector.dialectFromBuildTarget(ScalaVersionSelector.scala:61)
+	at scala.meta.internal.metals.ScalaVersionSelector.getDialect(ScalaVersionSelector.scala:68)
+	at scala.meta.internal.parsing.Trees.$anonfun$get$1(Trees.scala:39)
+	at scala.Option.orElse(Option.scala:477)
+	at scala.meta.internal.parsing.Trees.get(Trees.scala:39)
+	at scala.meta.internal.parsing.DocumentSymbolProvider.documentSymbols(DocumentSymbolProvider.scala:29)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$documentSymbol$1(MetalsLspService.scala:1466)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$apply$2(CancelTokens.scala:26)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:84)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$dependencySources$1(Tables.scala:29)
+	at scala.meta.internal.metals.DependencySources.getBuildTarget(DependencySources.scala:25)
+	at scala.meta.internal.metals.BuildTargets.$anonfun$inverseSources$2(BuildTargets.scala:236)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.BuildTargets.inverseSources(BuildTargets.scala:236)
+	at scala.meta.internal.metals.ScalaVersionSelector.dialectFromBuildTarget(ScalaVersionSelector.scala:61)
+	at scala.meta.internal.metals.ScalaVersionSelector.getDialect(ScalaVersionSelector.scala:68)
+	at scala.meta.internal.parsing.Trees.$anonfun$get$1(Trees.scala:39)
+	at scala.Option.orElse(Option.scala:477)
+	at scala.meta.internal.parsing.Trees.get(Trees.scala:39)
+	at scala.meta.internal.parsing.DocumentSymbolProvider.documentSymbols(DocumentSymbolProvider.scala:29)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$documentSymbol$1(MetalsLspService.scala:1466)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$apply$2(CancelTokens.scala:26)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.03 05:27:01 WARN  resetting database: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\.metals\metals.h2.db
+2024.02.03 05:27:01 ERROR unable to setup persistent H2 database with AUTO_SERVER=false, falling back to in-memory database. This means you may be redundantly asked to execute 'Import build', even if it's not needed. Also, code navigation will not work for existing files in the .metals/readonly/ directory. To fix this problem, make sure you only have one running Metals server in the directory '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor'.
+org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database (jdbc:h2:file:\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\.metals\metals;AUTO_SERVER=TRUE) for user 'sa': 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL State  : HYC00
+Error Code : 50100
+Message    : 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$dependencySources$1(Tables.scala:29)
+	at scala.meta.internal.metals.DependencySources.getBuildTarget(DependencySources.scala:25)
+	at scala.meta.internal.metals.BuildTargets.$anonfun$inverseSources$2(BuildTargets.scala:236)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.BuildTargets.inverseSources(BuildTargets.scala:236)
+	at scala.meta.internal.metals.ScalaVersionSelector.dialectFromBuildTarget(ScalaVersionSelector.scala:61)
+	at scala.meta.internal.metals.ScalaVersionSelector.getDialect(ScalaVersionSelector.scala:68)
+	at scala.meta.internal.parsing.Trees.$anonfun$get$1(Trees.scala:39)
+	at scala.Option.orElse(Option.scala:477)
+	at scala.meta.internal.parsing.Trees.get(Trees.scala:39)
+	at scala.meta.internal.parsing.DocumentSymbolProvider.documentSymbols(DocumentSymbolProvider.scala:29)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$documentSymbol$1(MetalsLspService.scala:1466)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$apply$2(CancelTokens.scala:26)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.h2.jdbc.JdbcSQLFeatureNotSupportedException: 機能はサポートされていません: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)"
+Feature not supported: "AUTO_SERVER=TRUE && (readOnly || inMemory || FILE_LOCK=NO || FILE_LOCK=FS)" [50100-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:556)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getUnsupportedException(DbException.java:287)
+	at org.h2.engine.Database.<init>(Database.java:304)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnectionFromDriver(DriverDataSource.java:258)
+	at org.flywaydb.core.internal.jdbc.DriverDataSource.getConnection(DriverDataSource.java:223)
+	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48)
+	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:74)
+	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:142)
+	at org.flywaydb.core.Flyway.clean(Flyway.java:234)
+	at scala.meta.internal.metals.Tables.migrateOrRestart(Tables.scala:159)
+	at scala.meta.internal.metals.Tables.tryUrl(Tables.scala:147)
+	at scala.meta.internal.metals.Tables.persistentConnection(Tables.scala:141)
+	at scala.meta.internal.metals.Tables.tryNoAutoServer(Tables.scala:101)
+	at scala.meta.internal.metals.Tables.tryAutoServer(Tables.scala:95)
+	at scala.meta.internal.metals.Tables.connect(Tables.scala:48)
+	at scala.meta.internal.metals.Tables.connection(Tables.scala:77)
+	at scala.meta.internal.metals.Tables.$anonfun$dependencySources$1(Tables.scala:29)
+	at scala.meta.internal.metals.DependencySources.getBuildTarget(DependencySources.scala:25)
+	at scala.meta.internal.metals.BuildTargets.$anonfun$inverseSources$2(BuildTargets.scala:236)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.BuildTargets.inverseSources(BuildTargets.scala:236)
+	at scala.meta.internal.metals.ScalaVersionSelector.dialectFromBuildTarget(ScalaVersionSelector.scala:61)
+	at scala.meta.internal.metals.ScalaVersionSelector.getDialect(ScalaVersionSelector.scala:68)
+	at scala.meta.internal.parsing.Trees.$anonfun$get$1(Trees.scala:39)
+	at scala.Option.orElse(Option.scala:477)
+	at scala.meta.internal.parsing.Trees.get(Trees.scala:39)
+	at scala.meta.internal.parsing.DocumentSymbolProvider.documentSymbols(DocumentSymbolProvider.scala:29)
+	at scala.meta.internal.metals.MetalsLspService.$anonfun$documentSymbol$1(MetalsLspService.scala:1466)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$apply$2(CancelTokens.scala:26)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:687)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:467)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+
+2024.02.03 05:27:03 WARN  scala-cli >= 0.1.3 not found in PATH, fetching and starting a JVM-based Scala CLI
+2024.02.03 05:27:04 INFO  Found Java version 1. Scala CLI requires at least Java 17, getting a temurin:17 JVM via coursier-jvm.
+2024.02.03 05:27:04 INFO  Running List(C:\Users\mastu\AppData\Local\Coursier\cache\arc\https\github.com\adoptium\temurin17-binaries\releases\download\jdk-17%252B35\OpenJDK17-jdk_x64_windows_hotspot_17_35.zip\jdk-17+35\bin\java.exe, -cp, C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\cli_3\1.1.0\cli_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app_3\2.1.0-M26\case-app_3-2.1.0-M26.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-launcher_2.13\2.1.8\coursier-launcher_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-proxy-setup\2.1.8\coursier-proxy-setup-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\publish\publish_2.13\0.1.6\publish_2.13-0.1.6.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\jimfs\jimfs\1.3.0\jimfs-1.3.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\jniutils\windows-jni-utils\0.3.3\windows-jni-utils-0.3.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\plokhotnyuk\jsoniter-scala\jsoniter-scala-core_3\2.13.5.2\jsoniter-scala-core_3-2.13.5.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\libsodiumjni\0.0.3\libsodiumjni-0.0.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-typesafe-config_3\0.12.0\metaconfig-typesafe-config_3-0.12.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ai\kien\python-native-libs_3\0.2.4\python-native-libs_3-0.2.4.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-packager_2.13\0.1.29\scala-packager_2.13-0.1.29.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli-signing\cli_3\0.2.3\cli_3-0.2.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\slf4j\slf4j-nop\2.0.9\slf4j-nop-2.0.9.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\client3\core_2.13\3.9.1\core_2.13-3.9.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-library_3\3.3.1\scala3-library_3-3.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\build-module_3\1.1.0\build-module_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\config_3\1.1.0\config_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\scala3-graal_3\1.1.0\scala3-graal_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\specification-level_3\1.1.0\specification-level_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app-annotations_3\2.1.0-M26\case-app-annotations_3-2.1.0-M26.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app-util_3\2.1.0-M26\case-app-util_3-2.1.0-M26.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\sourcecode_3\0.3.1\sourcecode_3-0.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\scala-cli\tmp\zip-input-stream\0.1.1\zip-input-stream-0.1.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.12\scala-library-2.13.12.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-cache_2.13\2.1.8\coursier-cache_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-core_2.13\2.1.8\coursier-core_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\guava\32.1.3-jre\guava-32.1.3-jre.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\net\java\dev\jna\jna\5.12.1\jna-5.12.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\net\java\dev\jna\jna-platform\5.12.1\jna-platform-5.12.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-core_3\0.12.0\metaconfig-core_3-0.12.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\typesafe\config\1.4.1\config-1.4.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-collection-compat_3\2.11.0\scala-collection-compat_3-2.11.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-io\commons-io\2.15.0\commons-io-2.15.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\cloud\tools\jib-core\0.22.0\jib-core-0.22.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\bouncycastle\bcpg-jdk18on\1.76\bcpg-jdk18on-1.76.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli-signing\shared_3\0.2.3\shared_3-0.2.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\slf4j\slf4j-api\2.0.9\slf4j-api-2.0.9.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\model\core_2.13\1.6.0\core_2.13-1.6.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\shared\core_2.13\1.3.16\core_2.13-1.3.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\shared\ws_2.13\1.3.16\ws_2.13-1.3.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\ow2\asm\asm\9.6\asm-9.6.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\java-class-name\java-class-name_3\0.1.3\java-class-name_3-0.1.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\trees_2.13\4.8.14\trees_2.13-4.8.14.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\test-runner_3\0.4.16\test-runner_3-0.4.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\os-lib_3\0.9.2\os-lib_3-0.9.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\pprint_3\0.8.1\pprint_3-0.8.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-env-nodejs_2.13\1.4.0\scalajs-env-nodejs_2.13-1.4.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-sbt-test-adapter_2.13\1.14.0\scalajs-sbt-test-adapter_2.13-1.14.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\swoval\file-tree-views\2.1.12\file-tree-views-2.1.12.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\zip-input-stream\zip-input-stream\0.1.2\zip-input-stream-0.1.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\options_3\1.1.0\options_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\directives_3\1.1.0\directives_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\scala-cli-bsp\1.1.0\scala-cli-bsp-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\test-runner_3\1.1.0\test-runner_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\tasty-lib_3\1.1.0\tasty-lib_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-archiver\4.9.0\plexus-archiver-4.9.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-container-default\2.1.1\plexus-container-default-2.1.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\windows-ansi\windows-ansi\0.0.5\windows-ansi-0.0.5.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-util_2.13\2.1.8\coursier-util_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\concurrent-reference-hash-map\1.1.0\concurrent-reference-hash-map-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-xml_2.13\2.2.0\scala-xml_2.13-2.2.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\failureaccess\1.0.1\failureaccess-1.0.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\checkerframework\checker-qual\3.37.0\checker-qual-3.37.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\errorprone\error_prone_annotations\2.21.1\error_prone_annotations-2.21.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\j2objc\j2objc-annotations\2.8\j2objc-annotations-2.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-pprint_3\0.12.0\metaconfig-pprint_3-0.12.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\typelevel\paiges-core_3\0.4.3\paiges-core_3-0.4.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-reflect\2.13.8\scala-reflect-2.13.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\cloud\tools\jib-build-plan\0.4.0\jib-build-plan-0.4.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client\1.34.0\google-http-client-1.34.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client-apache-v2\1.34.0\google-http-client-apache-v2-1.34.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auth\google-auth-library-oauth2-http\0.18.0\google-auth-library-oauth2-http-0.18.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\commons\commons-compress\1.24.0\commons-compress-1.24.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-databind\2.13.3\jackson-databind-2.13.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.13.3\jackson-datatype-jsr310-2.13.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\bouncycastle\bcprov-jdk18on\1.76\bcprov-jdk18on-1.76.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-compiler_3\3.3.1\scala3-compiler_3-3.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\common_2.13\4.8.14\common_2.13-4.8.14.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\tools_3\0.4.16\tools_3-0.4.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\test-interface\1.0\test-interface-1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\novocode\junit-interface\0.11\junit-interface-0.11.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\geny_3\1.0.0\geny_3-1.0.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\fansi_3\0.4.0\fansi_3-0.4.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-js-envs_2.13\1.4.0\scalajs-js-envs_2.13-1.4.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ch\epfl\scala\bloop-config_2.13\1.5.5\bloop-config_2.13-1.5.5.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\core_3\1.1.0\core_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\using_directives\1.1.0\using_directives-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\build-macros_3\1.1.0\build-macros_3-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ch\epfl\scala\bsp4j\2.1.0-M7\bsp4j-2.1.0-M7.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\javax\inject\javax.inject\1\javax.inject-1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-utils\4.0.0\plexus-utils-4.0.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-io\3.4.1\plexus-io-3.4.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\iq80\snappy\snappy\0.4\snappy-0.4.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\tukaani\xz\1.9\xz-1.9.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\luben\zstd-jni\1.5.5-10\zstd-jni-1.5.5-10.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-classworlds\2.6.0\plexus-classworlds-2.6.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\xbean\xbean-reflect\3.7\xbean-reflect-3.7.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\fusesource\jansi\jansi\1.18\jansi-1.18.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\httpcomponents\httpclient\4.5.10\httpclient-4.5.10.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\httpcomponents\httpcore\4.4.12\httpcore-4.4.12.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\opencensus\opencensus-api\0.24.0\opencensus-api-0.24.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\opencensus\opencensus-contrib-http-util\0.24.0\opencensus-contrib-http-util-0.24.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auto\value\auto-value-annotations\1.6.6\auto-value-annotations-1.6.6.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auth\google-auth-library-credentials\0.18.0\google-auth-library-credentials-0.18.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client-jackson2\1.32.1\google-http-client-jackson2-1.32.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-annotations\2.13.3\jackson-annotations-2.13.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-core\2.13.3\jackson-core-2.13.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-interfaces\3.3.1\scala3-interfaces-3.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\tasty-core_3\3.3.1\tasty-core_3-3.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-asm\9.5.0-scala-1\scala-asm-9.5.0-scala-1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\compiler-interface\1.3.5\compiler-interface-1.3.5.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-reader\3.19.0\jline-reader-3.19.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-terminal\3.19.0\jline-terminal-3.19.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-terminal-jna\3.19.0\jline-terminal-jna-3.19.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\thesamet\scalapb\scalapb-runtime_2.13\0.11.13\scalapb-runtime_2.13-0.11.13.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\nir_3\0.4.16\nir_3-0.4.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\util_3\0.4.16\util_3-0.4.16.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-parallel-collections_3\1.0.3\scala-parallel-collections_3-1.0.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-logging_2.13\1.1.1\scalajs-logging_2.13-1.1.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\bleep\bloop-rifle_2.13\1.5.11-sc-3\bloop-rifle_2.13-1.5.11-sc-3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-jvm_2.13\2.1.8\coursier-jvm_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\dependency_3\0.2.3\dependency_3-0.2.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\jgit\org.eclipse.jgit\6.7.0.202309050840-r\org.eclipse.jgit-6.7.0.202309050840-r.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-env-jsdom-nodejs_2.13\1.1.0\scalajs-env-jsdom-nodejs_2.13-1.1.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\lsp4j\org.eclipse.lsp4j.generator\0.20.1\org.eclipse.lsp4j.generator-0.20.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\lsp4j\org.eclipse.lsp4j.jsonrpc\0.20.1\org.eclipse.lsp4j.jsonrpc-0.20.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-codec\commons-codec\1.16.0\commons-codec-1.16.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\grpc\grpc-context\1.22.1\grpc-context-1.22.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\protobuf\protobuf-java\3.19.6\protobuf-java-3.19.6.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\util-interface\1.3.0\util-interface-1.3.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\thesamet\scalapb\lenses_2.13\0.11.13\lenses_2.13-0.11.13.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\libdaemon\libdaemon_2.13\0.0.11\libdaemon_2.13-0.0.11.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\scala-cli\snailgun\snailgun-core_2.13\0.4.1-sc2\snailgun-core_2.13-0.4.1-sc2.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\argonaut-shapeless_6.3_2.13\1.3.1\argonaut-shapeless_6.3_2.13-1.3.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier_2.13\2.1.8\coursier_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-env_2.13\2.1.8\coursier-env_2.13-2.1.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\googlecode\javaewah\JavaEWAH\1.2.3\JavaEWAH-1.2.3.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtend\org.eclipse.xtend.lib\2.28.0\org.eclipse.xtend.lib-2.28.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\argonaut\argonaut_2.13\6.3.8\argonaut_2.13-6.3.8.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\chuusai\shapeless_2.13\2.3.9\shapeless_2.13-2.3.9.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtext\org.eclipse.xtext.xbase.lib\2.28.0\org.eclipse.xtext.xbase.lib-2.28.0.jar;C:\Users\mastu\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtend\org.eclipse.xtend.lib.macro\2.28.0\org.eclipse.xtend.lib.macro-2.28.0.jar, scala.cli.ScalaCli, bsp, \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor)
+2024.02.03 05:27:04 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\.metals\bsp.trace.json or C:\Users\mastu\AppData\Local\scalameta\metals\cache\bsp.trace.json
+2024.02.03 05:27:04 INFO  no build target found for \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\utils\operations\Operations.scala. Using presentation compiler with project's scala-library version: 3.3.1
+Exception in thread "pool-3-thread-1" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:230)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2024.02.03 05:27:18 INFO  Connected to Scala CLI server v1.1.0
+2024.02.03 05:27:18 ERROR Empty build targets. Expected at least one build target identifier.
+2024.02.03 05:27:18 ERROR Empty build targets. Expected at least one build target identifier.
+2024.02.03 05:27:18 ERROR Empty build targets. Expected at least one build target identifier.
+2024.02.03 05:27:18 ERROR Empty build targets. Expected at least one build target identifier.
+2024.02.03 05:27:18 INFO  time: indexed workspace in 0.36s
+2024.02.03 05:27:19 INFO  compiling b4processor_bd2c96d2de (138 scala sources)
+2024.02.03 05:27:34 INFO  compiling b4processor_bd2c96d2de (138 scala sources)
+2024.02.03 05:27:37 INFO  Scala CLI started for \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor
+2024.02.03 05:27:37 WARN  Build server is not auto-connectable.
+2024.02.03 05:27:37 WARN  no build target for: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\utils\operations\Operations.scala
+2024.02.03 05:27:37 WARN  no build target for: \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\riscv\Opcode.scala
+2024.02.03 05:27:37 WARN  no build tool detected in workspace '\\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2024.02.03 05:27:37 INFO  no build target found for \\wsl.localhost\Ubuntu-22.04\home\go\B4-Processor-MP\src\main\scala\b4processor\riscv\Opcode.scala. Using presentation compiler with project's scala-library version: 3.3.1
+2024.02.03 05:27:39 INFO  time: code lens generation in 2.4s
+2024.02.03 05:27:39 INFO  time: code lens generation in 2.41s
+2024.02.03 05:27:39 INFO  time: code lens generation in 2.41s
+2024.02.03 05:27:39 INFO  time: code lens generation in 2.46s
+2024.02.03 05:52:37 INFO  Shutting down server
+2024.02.03 05:52:37 INFO  shutting down Metals
+2024.02.03 05:52:37 INFO  Shut down connection with build server.
+2024.02.03 05:52:37 INFO  Exiting server

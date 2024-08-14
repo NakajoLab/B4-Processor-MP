@@ -32,7 +32,7 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
   val sendDataTagValid = Bool()
 
   /** Sendデータ */
-  val sendData = UInt(2.W)  //本来は64bit, シミュレーション高速化のため小さい値にしている
+  val sendData = UInt(1.W)  //本来は64bit, シミュレーション高速化のため小さい値にしている
 
   /** Sendデータが有効である */
   val sendDataValid = Bool()
