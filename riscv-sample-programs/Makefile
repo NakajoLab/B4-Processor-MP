@@ -1,9 +1,9 @@
 SUBDIRS :=  matmul_send_2_c \
+			matmul_send_4_c \
+			matmul_send_8_c \
 			matmul_send_2a_c \
             matmul_amo_2_2_c \
 #			loadtest_c \
-#			matmul_send_4_c \
-			matmul_send_8_c \
 			matmul_amo_4_2_c \
 			matmul_amo_8_2_c \
 #			matmul_amoadd_2_c \

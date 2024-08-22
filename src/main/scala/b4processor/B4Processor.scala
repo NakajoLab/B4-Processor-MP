@@ -26,8 +26,8 @@ import b4processor.modules.reservationstation.{
   ReservationStation,
   ReservationStation2,
 }
-import b4processor.modules.SendReceiveQueue.SendReceiveQueue //added by akamatsu
-import b4processor.modules.delayMod.{dataReadDelayReg, dataReadWriteDelayReg, fetchDelayReg} //added by akamatsu
+import b4processor.modules.SendReceiveQueue2.SendReceiveQueue //added by akamatsu
+//import b4processor.modules.delayMod.{dataReadDelayReg, dataReadWriteDelayReg, fetchDelayReg} //added by akamatsu
 import b4processor.utils.axi.{ChiselAXI, VerilogAXI}
 import chisel3._
 import chisel3.experimental.dataview.DataViewable
@@ -66,10 +66,10 @@ class B4Processor(implicit params: Parameters) extends Module {
   private val loadStoreQueue =
     Seq.fill(params.threads)(Module(new LoadStoreQueue))
 
-  private val dataReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
-  private val amoReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
+  //private val dataReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
+  //private val amoReadWriteDelayRegs = Module(new dataReadWriteDelayReg) //added by akamatsu
 
-  private val sendReceiveQueue = Module(new SendReceiveQueue) //added by akamatsu
+  private val sendReceiveQueue = Seq.fill(params.threads)(Module(new SendReceiveQueue)) //added by akamatsu
   private val dataMemoryBuffer = Module(new DataMemoryBuffer)
 
   private val outputCollector = Module(new OutputCollector2)
@@ -231,8 +231,7 @@ class B4Processor(implicit params: Parameters) extends Module {
       loadStoreQueue(tid).io.decoders(d) <> decoders(tid)(d).io.loadStoreQueue
 
       /** デコーダとSRQの接続 */
-      decoders(tid)(d).io.sendReceiveQueue <> sendReceiveQueue.io.decoders(tid)(d)
-      sendReceiveQueue.io.decoders(tid)(d) <> decoders(tid)(d).io.sendReceiveQueue
+      decoders(tid)(d).io.sendReceiveQueue <> sendReceiveQueue(tid).io.decoders(d)
     }
 
     /** フェッチと分岐結果の接続 */
@@ -243,8 +242,14 @@ class B4Processor(implicit params: Parameters) extends Module {
     loadStoreQueue(tid).io.outputCollector := outputCollector.io.outputs(tid)
 
     /** SRQと出力コレクタ */
-    sendReceiveQueue.io.collectedOutput := outputCollector.io.outputs
-    outputCollector.io.sendReceiveQueue <> sendReceiveQueue.io.recevedData
+    sendReceiveQueue(tid).io.collectedOutput := outputCollector.io.outputs(tid)
+    outputCollector.io.sendReceiveQueue(tid) <> sendReceiveQueue(tid).io.recevedData
+
+    /** SRQの相互接続 */
+    for(t <- 0 until params.threads){
+        sendReceiveQueue(tid).io.responser(t).request := sendReceiveQueue(t).io.requester(tid).request
+        sendReceiveQueue(tid).io.requester(t).response := sendReceiveQueue(t).io.responser(tid).response
+    }
 
     /** レジスタファイルとリオーダバッファ */
     registerFile(tid).io.reorderBuffer <> reorderBuffer(tid).io.registerFile
@@ -253,7 +258,7 @@ class B4Processor(implicit params: Parameters) extends Module {
     fetch(tid).io.loadStoreQueueEmpty := loadStoreQueue(tid).io.empty
 
     /** フェッチとSRQの接続 */
-    fetch(tid).io.sendReceiveQueueEmpty := sendReceiveQueue.io.empty
+    fetch(tid).io.sendReceiveQueueEmpty := sendReceiveQueue(tid).io.empty
 
     /** フェッチとリオーダバッファの接続 */
     fetch(tid).io.reorderBufferEmpty := reorderBuffer(tid).io.isEmpty
@@ -267,9 +272,6 @@ class B4Processor(implicit params: Parameters) extends Module {
     /** リオーダバッファとLSQ */
     reorderBuffer(tid).io.loadStoreQueue <> loadStoreQueue(tid).io.reorderBuffer
 
-    /** リオーダバッファとSRQ */
-    reorderBuffer(tid).io.sendReceiveQueue <> sendReceiveQueue.io.reorderBuffer(tid)
-
     /** 命令メモリと命令キャッシュを接続 */
     externalMemoryInterface.io.instruction(tid) <>
       instructionCache(tid).io.memory
@@ -279,15 +281,15 @@ class B4Processor(implicit params: Parameters) extends Module {
   }
 
   /** メモリとデータメモリバッファ */
-  //externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory //通常の接続
-  dataReadWriteDelayRegs.cpuSide <> dataMemoryBuffer.io.memory
-  externalMemoryInterface.io.data <> dataReadWriteDelayRegs.memSide
+  externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory //通常の接続
+  //dataReadWriteDelayRegs.cpuSide <> dataMemoryBuffer.io.memory //メモリ書き込みに遅延追加
+  //externalMemoryInterface.io.data <> dataReadWriteDelayRegs.memSide //メモリ書き込みに遅延追加
 
   dataMemoryBuffer.io.output <> outputCollector.io.dataMemory
 
-  //externalMemoryInterface.io.amo <> amo.io.memory //通常の接続
-  amoReadWriteDelayRegs.cpuSide <> amo.io.memory
-  externalMemoryInterface.io.amo <> amoReadWriteDelayRegs.memSide
+  externalMemoryInterface.io.amo <> amo.io.memory //通常の接続
+  //amoReadWriteDelayRegs.cpuSide <> amo.io.memory //メモリ読み込みに遅延追加
+  //externalMemoryInterface.io.amo <> amoReadWriteDelayRegs.memSide //メモリ読み込みに遅延追加
 }
 
 class B4ProcessorFixedPorts(implicit params: Parameters) extends RawModule {

@@ -37,7 +37,7 @@ case class Parameters(
   debug: Boolean = false,
   enablePExt: Boolean = false,
   pextExecutors: Int = 1,
-  sendReceiveQueueIndexWidth: Int = 6,
+  sendReceiveQueueIndexWidth: Int = 2,
   sendReceiveOutputQueueIndexWidth: Int = 1,
   enableSR: Boolean = false,
   memoryAccessDelay: Int = 5,

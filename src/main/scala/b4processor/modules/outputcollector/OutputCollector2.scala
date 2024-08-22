@@ -26,11 +26,11 @@ class OutputCollector2(implicit params: Parameters)
     val csr = Flipped(Vec(params.threads, Irrevocable(new OutputValue)))
     val pextExecutor =
       Flipped(Vec(params.pextExecutors, Irrevocable(new OutputValue)))
-    val sendReceiveQueue = Flipped(Irrevocable(new OutputValue))
+    val sendReceiveQueue = Flipped(Vec(params.threads, Irrevocable(new OutputValue)))
   })
 
   val allInputs =
-    io.csr ++ Seq(io.amo, io.dataMemory ,io.sendReceiveQueue) ++ io.pextExecutor ++ io.executor
+    io.csr ++ Seq(io.amo, io.dataMemory ) ++ io.pextExecutor ++ io.executor ++ io.sendReceiveQueue
 
   val bufferedInputs = allInputs map { PassthroughBuffer(_) }
 

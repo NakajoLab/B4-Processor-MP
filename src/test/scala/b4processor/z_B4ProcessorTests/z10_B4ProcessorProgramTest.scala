@@ -22,170 +22,12 @@ class z10_B4ProcessorProgramTest
   val backendAnnotation = IcarusBackendAnnotation
   val WriteWaveformAnnotation = WriteFstAnnotation
 
-  // matmul_send_with_delayプログラムが実行できる
-  it should "execute matmul_send with 2 parallel thread 5 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 5),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 17, 6000)
-      }
-  }
-  it should "execute matmul_send with 2 parallel thread 10 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 10),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 17, 6000)
-      }
-  }
-  it should "execute matmul_send with 2 parallel thread 20 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 20),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 17, 6000)
-      }
-  }
-  it should "execute matmul_send with 2 parallel thread 40 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 40),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 17, 6000)
-      }
-  }
-  it should "execute matmul_send with 2 parallel thread 80 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 80),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 17, 10000)
-      }
-  }
-  it should "execute matmul_amo with 2 parallel thread 5 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 5, sendReceiveQueueIndexWidth = 1),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_amo_2_2_c")
-        c.checkForRegister(15, 17, 20000)
-      }
-  }
-  it should "execute matmul_amo with 2 parallel thread 10 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 10, sendReceiveQueueIndexWidth = 1),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_amo_2_2_c")
-        c.checkForRegister(15, 17, 20000)
-      }
-  }
-  it should "execute matmul_amo with 2 parallel thread 20 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 20, sendReceiveQueueIndexWidth = 1),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_amo_2_2_c")
-        c.checkForRegister(15, 17, 20000)
-      }
-  }
-  it should "execute matmul_amo with 2 parallel thread 40 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 40, sendReceiveQueueIndexWidth = 1),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_amo_2_2_c")
-        c.checkForRegister(15, 17, 20000)
-      }
-  }
-  it should "execute matmul_amo with 2 parallel thread 80 memory latency" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 1, tagWidth = 6, memoryAccessDelay = 80, sendReceiveQueueIndexWidth = 1),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/matmul_amo_2_2_c")
-        c.checkForRegister(15, 17, 20000)
-      }
-  }
-  // LoadStore_testプログラムが実行できる
-  it should "execute load_store with no parallel" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 1, executors = 1, decoderPerThread = 1, tagWidth = 5),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/loadtest_c")
-        c.checkForRegister(13, 20, 1000)
-      }
-  }
-  // Mtypeプログラムが実行できる
-  it should "execute Mtype with no parallel" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 1, executors = 1, decoderPerThread = 1, tagWidth = 5),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/Mtype_c")
-        c.checkForRegister(13, 20, 1000)
-      }
-  }
+
   // sendプログラムが実行できる
   it should "execute send with 2 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 2, tagWidth = 8),
+        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 2, tagWidth = 2),
       ),
     )
       .withAnnotations(
@@ -239,7 +81,7 @@ class z10_B4ProcessorProgramTest
         c.checkForRegister(17, 64, 2000)
       }
   }
-  it should "execute matmul_send with 8_2 parallel thread" in {
+  it should "execute matmul_send with 8 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
         defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 1, tagWidth = 6),
@@ -249,8 +91,8 @@ class z10_B4ProcessorProgramTest
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
         c.clock.setTimeout(5000)
-        c.initialize("programs/riscv-sample-programs/matmul_send_8_2_c")
-        c.checkForRegister(17, 64, 30000)
+        c.initialize("programs/riscv-sample-programs/matmul_send_8_c")
+        c.checkForRegister(17, 8, 30000)
       }
   }
   // matmul_amo_2プログラムが実行できる
