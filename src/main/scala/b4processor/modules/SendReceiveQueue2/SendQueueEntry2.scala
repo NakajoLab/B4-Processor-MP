@@ -24,7 +24,7 @@ class SendQueueEntry(implicit params: Parameters) extends Bundle {
   /** Sendに使用するデータが格納されるタグ(SourceRegister2 Tag) */
   val sendDataTag = new Tag
   /** Sendデータ */
-  val sendData = UInt(1.W)  //本来は64bit, シミュレーション高速化のため小さい値にしている
+  val sendData = UInt(64.W)  //本来は64bit, シミュレーション高速化のため小さい値にしている
   val sendDataValid = Bool()
 }
 

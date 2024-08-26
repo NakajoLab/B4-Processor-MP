@@ -45,14 +45,6 @@ class SendReceiveQueue(implicit params: Parameters)
     ),
   )
 
-  for (i <- 0 until params.threads) {
-    io.responser(i).response.valid := false.B
-    io.responser(i).response.SendData := 0.U
-
-    io.requester(i).request.valid := false.B
-    io.requester(i).request.ThreadId := 0.U
-  }
-
   var sendInsertIndex = sendHead
   var receiveInsertIndex = receiveHead
 
@@ -94,17 +86,19 @@ class SendReceiveQueue(implicit params: Parameters)
   for (o <- io.collectedOutput.outputs) {
     when(o.valid) {
       for (buf <- sendbuffer) {
-        when(buf.sendDataTag === o.bits.tag && !buf.sendDataValid) {
-          buf.sendData := o.bits.value
-          buf.sendDataValid := true.B
-        }
-        when(buf.destinationTag.id === o.bits.tag.id && buf.sendDataTag.threadId === o.bits.tag.threadId && !buf.destinationTagValid) {
-          buf.destinationTag.threadId := o.bits.value
-          buf.destinationTagValid := true.B
+        when(buf.valid) {
+          when(buf.sendDataTag === o.bits.tag && !buf.sendDataValid) {
+            buf.sendData := o.bits.value
+            buf.sendDataValid := true.B
+          }
+          when(buf.destinationTag.id === o.bits.tag.id && buf.sendDataTag.threadId === o.bits.tag.threadId && !buf.destinationTagValid) {
+            buf.destinationTag.threadId := o.bits.value
+            buf.destinationTagValid := true.B
+          }
         }
       }
       for (buf <- receivebuffer) {
-        when(buf.sendDataTag.id === o.bits.tag.id && buf.destinationTag.threadId === o.bits.tag.threadId && !buf.sendDataTagValid) {
+        when(buf.sendDataTag.id === o.bits.tag.id && buf.destinationTag.threadId === o.bits.tag.threadId && !buf.sendDataTagValid && buf.valid) {
           buf.sendDataTag.threadId := o.bits.value
           buf.sendDataTagValid := true.B
         }
@@ -122,13 +116,13 @@ class SendReceiveQueue(implicit params: Parameters)
 
   /** SendQueue request 受信 -> response 送信*/
   var sendReq = sendbuffer(sendTail)
-  var sendReady = sendReq.destinationTagValid && sendReq.sendDataValid
+  var sendReady = sendReq.destinationTagValid && sendReq.sendDataValid && sendReq.valid
 
   for(responser <- io.responser){
-    when(responser.request.valid && sendReady && (responser.request.ThreadId === sendReq.sendDataTag.threadId)){
-      responser.response.valid := true.B
-      responser.response.SendData := sendReq.sendData
-
+    val RespResVal = responser.request.valid && sendReady && (responser.request.ThreadId === sendReq.sendDataTag.threadId)
+    responser.response.valid := RespResVal
+    responser.response.SendData := sendReq.sendData
+    when(RespResVal){
       sendReq.valid := false.B
       sendReq.destinationTagValid := false.B
       sendReq.sendDataValid := false.B
@@ -137,7 +131,6 @@ class SendReceiveQueue(implicit params: Parameters)
   }
 
   /** ReceiveQueue response 受信 */
-
   for (requester <- io.requester) {
     io.recevedData.bits.value := requester.response.SendData
     io.recevedData.bits.tag := receiveReq.destinationTag
@@ -150,6 +143,7 @@ class SendReceiveQueue(implicit params: Parameters)
       receiveTail := receiveTail + 1.U
     }
   }
+
 }
 
 

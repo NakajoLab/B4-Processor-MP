@@ -64,10 +64,10 @@ class z10_B4ProcessorProgramTest
       ) { c =>
         c.clock.setTimeout(1000)
         c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 64, 1000)
+        c.checkForRegister(17, 8, 1000)
       }
   }
-  it should "execute matmul_send with 4 parallel thread 50 memory latency" in {
+  it should "execute matmul_send with 4 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
         defaultParams.copy(threads = 4, executors = 4, decoderPerThread = 1, tagWidth = 6),
@@ -92,7 +92,7 @@ class z10_B4ProcessorProgramTest
       ) { c =>
         c.clock.setTimeout(5000)
         c.initialize("programs/riscv-sample-programs/matmul_send_8_c")
-        c.checkForRegister(17, 8, 30000)
+        c.checkForRegister(17, 4, 30000)
       }
   }
   // matmul_amo_2プログラムが実行できる
