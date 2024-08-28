@@ -55,7 +55,6 @@ class SendReceiveQueue(implicit params: Parameters)
   for (i <- 0 until params.decoderPerThread) {
     val decoder = io.decoders(i)
     val OpIsSend = decoder.bits.operation === SendReceiveOperation.Send
-    //decoder.ready := (OpIsSend && !SQisFull) || (!OpIsSend && !RQisFull)
     decoder.ready := !SQisFull && !RQisFull
     val entryValid = decoder.ready && decoder.valid
 

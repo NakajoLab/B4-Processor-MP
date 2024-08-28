@@ -39,7 +39,7 @@ class Decoder(implicit params: Parameters) extends Module with FormalTools {
     LoadStoreOperation.Store === operations.loadStoreOp.validDataOrZero ||
       operations.amoOp.isValid ||
       operations.csrOp.isValid ||
-      operations.sendReceiveOp.isValid // added by akamatsu+
+      SendReceiveOperation.Send === operations.sendReceiveOp.validDataOrZero // added by akamatsu+
 
   val operationSendRaceive = operations.sendReceiveOp.isValid
 
