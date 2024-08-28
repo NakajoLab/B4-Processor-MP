@@ -131,13 +131,20 @@ class SendReceiveQueue(implicit params: Parameters)
   }
 
   /** ReceiveQueue response 受信 */
-  for (requester <- io.requester) {
-    io.recevedData.bits.value := requester.response.SendData
-    io.recevedData.bits.tag := receiveReq.destinationTag
-    io.recevedData.valid := requester.response.valid
-    io.recevedData.bits.isError := false.B
+  // io.receivedDataのデフォルト値を設定
+  io.recevedData.bits.value := 0.U   // デフォルトの値を設定
+  io.recevedData.bits.tag.id := 0.U     // デフォルトのタグを設定
+  io.recevedData.bits.tag.threadId := 0.U     // デフォルトのタグを設定
+  io.recevedData.valid := false.B    // デフォルトのvalidを設定
+  io.recevedData.bits.isError := false.B  // デフォルトのisErrorを設定
 
-    when(requester.response.valid){
+  for (requester <- io.requester) {
+    when(requester.response.valid) {
+      io.recevedData.bits.value := requester.response.SendData
+      io.recevedData.bits.tag := receiveReq.destinationTag
+      io.recevedData.valid := true.B
+      io.recevedData.bits.isError := false.B
+
       receiveReq.valid := false.B
       receiveReq.sendDataTagValid := false.B
       receiveTail := receiveTail + 1.U

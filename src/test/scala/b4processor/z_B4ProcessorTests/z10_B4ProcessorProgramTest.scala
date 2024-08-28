@@ -84,14 +84,14 @@ class z10_B4ProcessorProgramTest
   it should "execute matmul_send with 8 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 1, tagWidth = 6),
+        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 2, tagWidth = 6),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
         c.clock.setTimeout(5000)
-        c.initialize("programs/riscv-sample-programs/matmul_send_8_c")
+        c.initialize("programs/riscv-sample-programs/matmul_send_8_2_c")
         c.checkForRegister(17, 4, 30000)
       }
   }
