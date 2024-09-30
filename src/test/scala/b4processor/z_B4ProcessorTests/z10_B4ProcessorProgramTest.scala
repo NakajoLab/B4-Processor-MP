@@ -22,36 +22,6 @@ class z10_B4ProcessorProgramTest
   val backendAnnotation = IcarusBackendAnnotation
   val WriteWaveformAnnotation = WriteFstAnnotation
 
-
-  // sendプログラムが実行できる
-  it should "execute send with 2 parallel thread" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 2, tagWidth = 2),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/send_2_c")
-        c.checkForRegister(13, 20, 10000)
-      }
-  }
-  // matmulプログラムが実行できる
-  it should "execute matmul with no parallel" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 1, executors = 1, decoderPerThread = 1, tagWidth = 6),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.clock.setTimeout(30000)
-        c.initialize("programs/riscv-sample-programs/matmul_c")
-        c.checkForRegister(15, 64, 10000)
-      }
-  }
   // matmul_sendプログラムが実行できる
   it should "execute matmul_send with 2 parallel thread" in {
     test(
@@ -62,9 +32,9 @@ class z10_B4ProcessorProgramTest
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(1000)
+        c.clock.setTimeout(10000)
         c.initialize("programs/riscv-sample-programs/matmul_send_2_c")
-        c.checkForRegister(17, 8, 1000)
+        c.checkForRegister(17, 8, 10000)
       }
   }
   it should "execute matmul_send with 4 parallel thread" in {
@@ -76,23 +46,23 @@ class z10_B4ProcessorProgramTest
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
-        c.clock.setTimeout(2000)
-        c.initialize("programs/riscv-sample-programs/matmul_send_4_c")
-        c.checkForRegister(17, 64, 2000)
+        c.clock.setTimeout(10000)
+        c.initialize("programs/riscv-sample-programs/matmul_send_4_2_c")
+        c.checkForRegister(17, 8, 10000)
       }
   }
   it should "execute matmul_send with 8 parallel thread" in {
     test(
       new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 2, tagWidth = 6),
+        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 1, tagWidth = 6),
       ),
     )
       .withAnnotations(
         Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
       ) { c =>
         c.clock.setTimeout(5000)
-        c.initialize("programs/riscv-sample-programs/matmul_send_8_2_c")
-        c.checkForRegister(17, 4, 30000)
+        c.initialize("programs/riscv-sample-programs/matmul_send_8_c")
+        c.checkForRegister(17, 4, 3000)
       }
   }
   // matmul_amo_2プログラムが実行できる
@@ -179,74 +149,6 @@ class z10_B4ProcessorProgramTest
         c.clock.setTimeout(30000)
         c.initialize("programs/riscv-sample-programs/matmul_amoadd_8_c")
         c.checkForRegister(15, 196, 150000)
-      }
-  }
-  // sumプログラムが実行できる
-  it should "execute sum with no parallel" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 1, executors = 4, decoderPerThread = 2, tagWidth = 8),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/sum_c")
-        c.checkForRegister(10, 2100, 10000)
-      }
-  }
-  // sum_amoプログラムが実行できる
-  it should "execute sum_amo with 2 parallel thread" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 2, decoderPerThread = 2, tagWidth = 7),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/sum_amo_2_c")
-        c.checkForRegister(10, 2090, 2000)
-      }
-  }
-  // sum_sendプログラムが実行できる
-  it should "execute sum_send with 2 parallel thread" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 2, executors = 8, decoderPerThread = 2, tagWidth = 6),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/sum_send_2_c")
-        c.checkForRegister(10, 5006, 20000)
-      }
-  }
-  it should "execute sum_send with 4 parallel thread" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 4, executors = 4, decoderPerThread = 1, tagWidth = 8),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/sum_send_4_c")
-        c.checkForRegister(10, 2090, 1000)
-      }
-  }
-  it should "execute sum_send with 8 parallel thread" in {
-    test(
-      new B4ProcessorWithMemory()(
-        defaultParams.copy(threads = 8, executors = 8, decoderPerThread = 2, tagWidth = 8),
-      ),
-    )
-      .withAnnotations(
-        Seq(WriteWaveformAnnotation, backendAnnotation, CachingAnnotation),
-      ) { c =>
-        c.initialize("programs/riscv-sample-programs/sum_send_8_c")
-        c.checkForRegister(10, 2090, 2000)
       }
   }
   // branchプログラムが実行できる

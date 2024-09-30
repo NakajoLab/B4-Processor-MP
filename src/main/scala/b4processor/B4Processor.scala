@@ -9,7 +9,7 @@ import b4processor.modules.AtomicLSU
 import b4processor.modules.PExt.B4PExtExecutor
 import circt.stage.ChiselStage
 import b4processor.modules.branch_output_collector.BranchOutputCollector
-import b4processor.modules.cache.{DataMemoryBuffer, InstructionMemoryCache}
+import b4processor.modules.cache.{DataMemoryBuffer, InstructionMemoryCache, DirectMappedCache}
 import b4processor.modules.csr.{CSR, CSRReservationStation}
 import b4processor.modules.decoder.{Decoder, Uncompresser}
 import b4processor.modules.executor.Executor
@@ -71,6 +71,7 @@ class B4Processor(implicit params: Parameters) extends Module {
 
   private val sendReceiveQueue = Seq.fill(params.threads)(Module(new SendReceiveQueue)) //added by akamatsu
   private val dataMemoryBuffer = Module(new DataMemoryBuffer)
+  private val directMappedCache = Module(new DirectMappedCache()) //added by akamatsu
 
   private val outputCollector = Module(new OutputCollector2)
   private val branchAddressCollector = Module(new BranchOutputCollector())
@@ -281,13 +282,17 @@ class B4Processor(implicit params: Parameters) extends Module {
   }
 
   /** メモリとデータメモリバッファ */
-  externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory //通常の接続
+  //externalMemoryInterface.io.data <> dataMemoryBuffer.io.memory //通常の接続
+  externalMemoryInterface.io.data <> directMappedCache.io.externalMemoryInterface
+  directMappedCache.io.core <> dataMemoryBuffer.io.memory
   //dataReadWriteDelayRegs.cpuSide <> dataMemoryBuffer.io.memory //メモリ書き込みに遅延追加
   //externalMemoryInterface.io.data <> dataReadWriteDelayRegs.memSide //メモリ書き込みに遅延追加
 
   dataMemoryBuffer.io.output <> outputCollector.io.dataMemory
 
   externalMemoryInterface.io.amo <> amo.io.memory //通常の接続
+  //externalMemoryInterface.io.amo <> directMappedCache.io.externalMemoryInterface1
+  //directMappedCache.io.amo <> amo.io.memory
   //amoReadWriteDelayRegs.cpuSide <> amo.io.memory //メモリ読み込みに遅延追加
   //externalMemoryInterface.io.amo <> amoReadWriteDelayRegs.memSide //メモリ読み込みに遅延追加
 }
